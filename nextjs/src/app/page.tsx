@@ -1,5 +1,7 @@
 import Head from 'next/head';
 import { RegisterLink, LoginLink } from '@kinde-oss/kinde-auth-nextjs/components';
+import Image from 'next/image';
+import user from './user.png';
 
 export default function Home() {
     return (
@@ -22,26 +24,49 @@ export default function Home() {
                         style={{
                             width: 500,
                             height: 250,
-                            background: '#ccc',
+                            background: '#E4CCFF',
                             padding: '10px',
                             borderRadius: '10px',
                             marginBottom: '10px',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            position: 'relative',
                         }}
                     >
-                        <p>Lacy Smith</p>
+                        <p style={{ position: 'absolute', left: 10, top: 10 }}>Lacy Smith</p>
+                        <Image src={user} alt='profile' />
                     </div>
                     <div
                         style={{
                             width: 500,
                             height: 250,
-                            background: '#ccc',
+                            background: '#E4CCFF',
                             padding: '10px',
                             borderRadius: '10px',
+                            marginBottom: '10px',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            position: 'relative',
                         }}
                     >
-                        <p>You</p>
+                        <p style={{ position: 'absolute', left: 10, top: 10 }}>You</p>
+                        <Image src={user} alt='profile' />
                     </div>
-                    <button style={{ padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}>Skip</button>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
+                        <button
+                            style={{
+                                padding: '5px 50px',
+                                fontSize: '16px',
+                                cursor: 'pointer',
+                                backgroundColor: '#0D99FF',
+                                borderRadius: 20,
+                            }}
+                        >
+                            Skip
+                        </button>
+                    </div>
                 </div>
 
                 <div style={{ flex: 2, marginLeft: '20px', position: 'relative' }}>
