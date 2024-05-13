@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import { RegisterLink, LoginLink } from '@kinde-oss/kinde-auth-nextjs/components';
 import Image from 'next/image';
+import { FaFlag } from 'react-icons/fa6';
 import user from './user.png';
 
 export default function Home() {
@@ -75,9 +76,11 @@ export default function Home() {
                             backgroundColor: '#4CAF50',
                             padding: '10px',
                             borderRadius: '10px',
+                            paddingBottom: 15,
                         }}
                     >
-                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
+                            <FaFlag size={25} color='red' style={{ position: 'absolute', top: 10, right: 10 }} />
                             <strong
                                 style={{
                                     justifyContent: 'center',
