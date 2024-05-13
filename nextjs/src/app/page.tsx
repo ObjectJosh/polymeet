@@ -47,22 +47,98 @@ export default function Home() {
                 <div style={{ flex: 2, marginLeft: '20px', position: 'relative' }}>
                     <div
                         style={{
-                            // backgroundColor: '#FFD700',
                             backgroundColor: '#4CAF50',
                             padding: '10px',
                             borderRadius: '10px',
                         }}
                     >
-                        <strong>Chatting With</strong>
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <strong
+                                style={{
+                                    justifyContent: 'center',
+                                    display: 'flex',
+                                    backgroundColor: '#FFD700',
+                                    padding: 10,
+                                    color: 'black',
+                                    width: '20rem',
+                                    borderRadius: 20,
+                                }}
+                            >
+                                Chatting With
+                            </strong>
+                        </div>
                         <p>Name: Lacy Smith</p>
                         <p>Major: Computer Science</p>
                         <p>Year: Sophomore, C/O 2026</p>
-                        <p>Tags: Music, Climbing, CSC 357</p>
+                        <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                            <p>Tags:</p>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    gap: 5,
+                                    marginLeft: 5,
+                                    justifyContent: 'space-around',
+                                    width: '100%',
+                                }}
+                            >
+                                {['Music', 'Climbing', 'CSC 357'].map((tag) => (
+                                    <div
+                                        key={tag}
+                                        style={{
+                                            backgroundColor: '#FFD700',
+                                            padding: '10px 30px',
+                                            borderRadius: '10px',
+                                            color: 'black',
+                                        }}
+                                    >
+                                        {tag}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
-                    <div style={{ marginTop: '20px', padding: '10px' }}>
-                        <p>Lacy Smith: Hi!</p>
-                        <p>You: Nice to meet you!</p>
-                        <p>Lacy Smith: You too!</p>
+                    <div
+                        style={{
+                            marginTop: '20px',
+                            padding: '10px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '10px',
+                        }}
+                    >
+                        <div
+                            style={{
+                                background: 'lightblue',
+                                padding: '10px 20px',
+                                borderRadius: '15px',
+                                maxWidth: '80%',
+                                alignSelf: 'flex-end',
+                            }}
+                        >
+                            <p>Lacy Smith: Hi!</p>
+                        </div>
+                        <div
+                            style={{
+                                background: '#CBC3E3',
+                                padding: '10px 20px',
+                                borderRadius: '15px',
+                                maxWidth: '80%',
+                                alignSelf: 'flex-start',
+                            }}
+                        >
+                            <p>You: Nice to meet you!</p>
+                        </div>
+                        <div
+                            style={{
+                                background: 'lightblue',
+                                padding: '10px 20px',
+                                borderRadius: '15px',
+                                maxWidth: '80%',
+                                alignSelf: 'flex-end',
+                            }}
+                        >
+                            <p>Lacy Smith: You too!</p>
+                        </div>
                     </div>
                     <div
                         style={{
