@@ -42,8 +42,8 @@
     },
     "lint-staged": {
         "*.{ts,tsx}": [
-            "npm run lint",
-            "npm run prettier"
+            "pnpm run lint",
+            "pnpm run prettier"
         ]
     }
 }
