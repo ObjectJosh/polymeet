@@ -103,7 +103,7 @@ export default function Home() {
                             <div
                                 style={{
                                     display: 'flex',
-                                    gap: 5,
+                                    gap: '5px',
                                     marginLeft: 5,
                                     justifyContent: 'space-around',
                                     width: '100%',
@@ -117,6 +117,7 @@ export default function Home() {
                                             padding: '10px 30px',
                                             borderRadius: '10px',
                                             color: 'black',
+                                            // margin: '0 2px',
                                         }}
                                     >
                                         {tag}
