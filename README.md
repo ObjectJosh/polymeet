@@ -16,15 +16,15 @@ cd nextjs
 ```bash
 npm install
 ```
-
+Run run the app:
+```
+npm run dev
+```
 
 ## Contributing
 
-We welcome contributions! Please follow [Style Guide](./CONTRIBUTING.md) to contribute to the project.
+We welcome contributions! Please check out [CONTRIBUTING.md](./CONTRIBUTING.md) and follow the [Style Guide](./STYLE_GUIDE.md) to contribute to the project.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-
-
-- Follow our [Style Guide](./STYLE_GUIDE.md).
