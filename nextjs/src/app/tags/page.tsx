@@ -21,28 +21,30 @@ const TagsPage = () => {
     };
 
     return (
-        <div className='tags-page'>
-            <h1>Select your tags</h1>
-            <p>Select up to 3</p>
-            <div className='categories'>
-                {Object.entries(tags).map(([category, tags]) => (
-                    <div key={category} className='category'>
-                        <h2>{category}</h2>
-                        <div className='tags'>
-                            {tags.map((tag) => (
-                                <button
-                                    key={tag}
-                                    className={`tag ${selectedTags.includes(tag) ? 'selected' : ''}`}
-                                    onClick={() => handleTagClick(tag)}
-                                >
-                                    {tag}
-                                </button>
-                            ))}
+        <div className='tags-page-container'>
+            <div className='tags-page'>
+                <h1>Select your tags</h1>
+                <p>Select up to 3</p>
+                <div className='categories'>
+                    {Object.entries(tags).map(([category, tags]) => (
+                        <div key={category} className='category'>
+                            <h2>{category}</h2>
+                            <div className='tags'>
+                                {tags.map((tag) => (
+                                    <button
+                                        key={tag}
+                                        className={`tag ${selectedTags.includes(tag) ? 'selected' : ''}`}
+                                        onClick={() => handleTagClick(tag)}
+                                    >
+                                        {tag}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
+                <button className='submit-button'>Join Poly Meet</button>
             </div>
-            <button className='submit-button'>Join Poly Meet</button>
         </div>
     );
 };
