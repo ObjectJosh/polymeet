@@ -16,6 +16,7 @@
         "@kinde-oss/kinde-auth-react": "^3.0.28",
         "@mui/icons-material": "^5.15.18",
         "@mui/material": "^5.15.18",
+        "mongoose": "^8.4.0",
         "next": "14.2.3",
         "react": "^18",
         "react-dom": "^18",
@@ -38,6 +39,7 @@
         "lint-staged": "^15.2.2",
         "postcss": "^8",
         "prettier": "^3.2.5",
+        "swr": "^2.2.5",
         "tailwindcss": "^3.4.1",
         "typescript": "^5"
     },
