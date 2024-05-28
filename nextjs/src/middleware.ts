@@ -14,5 +14,5 @@ export default function middleware(req: NextRequest) {
 
 // How to match paths: https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
 export const config = {
-    matcher: ['/dashboard/:path*'],
+    matcher: ['/dashboard/:path*', '/settings/:path*', '/chat/:path*'],
 };
