@@ -2,28 +2,27 @@
 
 import { useState } from 'react';
 import Head from 'next/head';
-import { RegisterLink, LoginLink } from '@kinde-oss/kinde-auth-nextjs/components';
 import Image from 'next/image';
 import { FaFlag } from 'react-icons/fa6';
 import { FaCog } from 'react-icons/fa';
 import { FaArrowRight } from 'react-icons/fa';
 
-import user from './user.png';
+import user from '../user.png';
 
 export default function Home() {
     const [isModalOpen, setModalOpen] = useState(false);
     const [isReportSubmitted, setReportSubmitted] = useState(false);
-    
+
     const handleFlagClick = () => {
         setModalOpen(true);
     };
-    
+
     const handleCloseModal = () => {
         setModalOpen(false);
         setReportSubmitted(false);
     };
-    
-    const handleSubmit = (event: { preventDefault: () => void; }) => {
+
+    const handleSubmit = (event: { preventDefault: () => void }) => {
         event.preventDefault();
         // Handle the submit logic here
         setReportSubmitted(true);
