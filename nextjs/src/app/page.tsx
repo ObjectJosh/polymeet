@@ -1,19 +1,36 @@
+'use client';
+
+import { useState } from 'react';
 import Head from 'next/head';
 import { RegisterLink, LoginLink } from '@kinde-oss/kinde-auth-nextjs/components';
 import Image from 'next/image';
 import { FaFlag } from 'react-icons/fa6';
 import { FaCog } from 'react-icons/fa';
-import { FaArrowRight } from 'react-icons/fa'; // Add this import for the arrow icon
+import { FaArrowRight } from 'react-icons/fa';
 
 import user from './user.png';
 
 export default function Home() {
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [isReportSubmitted, setReportSubmitted] = useState(false);
+    
+    const handleFlagClick = () => {
+        setModalOpen(true);
+    };
+    
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        setReportSubmitted(false);
+    };
+    
+    const handleSubmit = (event: { preventDefault: () => void; }) => {
+        event.preventDefault();
+        // Handle the submit logic here
+        setReportSubmitted(true);
+    };
+
     return (
         <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', backgroundColor: '#070D1B', height: '100vh' }}>
-            {/* <div style={{ display: 'flex', justifyContent: 'end', gap: 20, paddingBottom: 5 }}>
-                <LoginLink>Sign in</LoginLink>
-                <RegisterLink>Sign up</RegisterLink>
-            </div> */}
             <Head>
                 <title>Poly Meet</title>
             </Head>
@@ -56,7 +73,6 @@ export default function Home() {
                         }}
                     >
                         <p style={{ position: 'absolute', left: 10, top: 10 }}>Lacy Smith</p>
-                        {/* <Image src={user} alt='profile' /> */}
                     </div>
                     <div
                         style={{
@@ -73,7 +89,6 @@ export default function Home() {
                         }}
                     >
                         <p style={{ position: 'absolute', left: 10, top: 10 }}>You</p>
-                        {/* <Image src={user} alt='profile' /> */}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
                         <button
@@ -101,7 +116,12 @@ export default function Home() {
                         }}
                     >
                         <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
-                            <FaFlag size={25} color='red' style={{ position: 'absolute', top: 10, right: 10 }} />
+                            <FaFlag
+                                size={25}
+                                color='red'
+                                style={{ position: 'absolute', top: 10, right: 10, cursor: 'pointer' }}
+                                onClick={handleFlagClick}
+                            />
                             <strong
                                 style={{
                                     justifyContent: 'center',
@@ -137,7 +157,6 @@ export default function Home() {
                                             padding: '10px 30px',
                                             borderRadius: '10px',
                                             color: 'black',
-                                            // margin: '0 2px',
                                         }}
                                     >
                                         {tag}
@@ -228,6 +247,104 @@ export default function Home() {
                     </div>
                 </div>
             </div>
+
+            {isModalOpen && !isReportSubmitted && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', width: '400px' }}>
+                        <h2 style={{ color: 'red' }}>Report Lacy Smith?</h2>
+                        <p style={{ color: 'black' }}>By reporting this user, you will not match with them again.</p>
+                        <form onSubmit={handleSubmit}>
+                            <textarea
+                                placeholder='Reason for reporting...'
+                                style={{
+                                    width: '100%',
+                                    height: '100px',
+                                    padding: '10px',
+                                    borderRadius: '5px',
+                                    border: '1px solid #BFCAD8',
+                                    color: 'black',
+                                }}
+                            />
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+                                <button
+                                    type='button'
+                                    onClick={handleCloseModal}
+                                    style={{
+                                        marginRight: '10px',
+                                        padding: '5px 15px',
+                                        backgroundColor: 'gray',
+                                        borderRadius: '5px',
+                                        border: 'none',
+                                        color: 'white',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type='submit'
+                                    style={{
+                                        padding: '5px 15px',
+                                        backgroundColor: 'green',
+                                        borderRadius: '5px',
+                                        border: 'none',
+                                        color: 'white',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {isReportSubmitted && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', width: '400px' }}>
+                        <h2 style={{ color: 'red' }}>We have received your report for Lacy Smith</h2>
+                        <p style={{ color: 'black' }}>You will not match with them again</p>
+                        <button
+                            onClick={handleCloseModal}
+                            style={{
+                                padding: '10px 20px',
+                                backgroundColor: 'green',
+                                borderRadius: '5px',
+                                border: 'none',
+                                color: 'white',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Back to PolyMeet
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
