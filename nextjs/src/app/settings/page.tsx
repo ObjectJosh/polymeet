@@ -1,55 +1,13 @@
+'use client';
 import Head from 'next/head';
 import Image from 'next/image';
 import { Typography, IconButton, Box } from '@mui/material';
 import { Edit as EditIcon } from '@mui/icons-material';
 import user from '../user.png';
+import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 
 export default function Settings() {
-    const Header = ({ text }: { text: string }) => (
-        <Typography
-            variant='h1'
-            sx={{
-                marginBottom: '20px',
-                marginTop: '3rem',
-                color: '#BFCAD8',
-                fontWeight: 'bold',
-                fontSize: '60px',
-                lineHeight: 'auto',
-                letterSpacing: '-0.02em',
-                textAlign: 'center',
-            }}
-        >
-            {text}
-        </Typography>
-    );
-
-    const Field = ({ label, value }: { label: string, value: string }) => (
-        <Box sx={{ marginBottom: '20px' }}>
-            <Typography variant='h6' sx={{ color: '#BFCAD8' }}>
-                {label}
-            </Typography>
-            <Typography variant='body1' sx={{ display: 'flex', alignItems: 'center', color: '#BFCAD8' }}>
-                {value}
-                <IconButton sx={{ marginLeft: '10px' }}>
-                    <EditIcon sx={{ color: '#BFCAD8' }} />
-                </IconButton>
-            </Typography>
-        </Box>
-    );
-
-    const Tag = ({ label }: { label: string }) => (
-        <Box
-            sx={{
-                backgroundColor: '#F9AD16',
-                padding: '5px 10px',
-                borderRadius: '10px',
-                color: 'black',
-                marginRight: '10px',
-            }}
-        >
-            {label}
-        </Box>
-    );
+    const { logout } = useKindeAuth();
 
     return (
         <div
@@ -80,24 +38,27 @@ export default function Settings() {
                     </div>
                     <div style={{ color: '#006155', fontSize: '24px' }}>PolyMeet</div>
                 </a>
-                <a href='/welcome-page' style={{ textDecoration: 'none' }}>
-                    <button
-                        style={{
-                            backgroundColor: 'red',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '5px',
-                            padding: '10px 20px',
-                            cursor: 'pointer',
-                        }}
-                    >
-                        Log Out
-                    </button>
-                </a>
+                <button
+                    style={{
+                        backgroundColor: 'red',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '5px',
+                        padding: '10px 20px',
+                        cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                        console.log('logout');
+                        logout();
+                    }}
+                    type='button'
+                >
+                    Log Out
+                </button>
             </nav>
 
             <Header text='Account Settings' />
-            <Box sx={{ padding: '0 400px', marginTop: "3%" }}>
+            <Box sx={{ padding: '0 400px', marginTop: '3%' }}>
                 <Field label='Name' value='Firstname LastName' />
                 <Field label='Email' value='someone@calpoly.edu' />
                 <Field label='Year' value='Second' />
@@ -119,3 +80,49 @@ export default function Settings() {
         </div>
     );
 }
+
+const Header = ({ text }: { text: string }) => (
+    <Typography
+        variant='h1'
+        sx={{
+            marginBottom: '20px',
+            marginTop: '3rem',
+            color: '#BFCAD8',
+            fontWeight: 'bold',
+            fontSize: '60px',
+            lineHeight: 'auto',
+            letterSpacing: '-0.02em',
+            textAlign: 'center',
+        }}
+    >
+        {text}
+    </Typography>
+);
+
+const Field = ({ label, value }: { label: string; value: string }) => (
+    <Box sx={{ marginBottom: '20px' }}>
+        <Typography variant='h6' sx={{ color: '#BFCAD8' }}>
+            {label}
+        </Typography>
+        <Typography variant='body1' sx={{ display: 'flex', alignItems: 'center', color: '#BFCAD8' }}>
+            {value}
+            <IconButton sx={{ marginLeft: '10px' }}>
+                <EditIcon sx={{ color: '#BFCAD8' }} />
+            </IconButton>
+        </Typography>
+    </Box>
+);
+
+const Tag = ({ label }: { label: string }) => (
+    <Box
+        sx={{
+            backgroundColor: '#F9AD16',
+            padding: '5px 10px',
+            borderRadius: '10px',
+            color: 'black',
+            marginRight: '10px',
+        }}
+    >
+        {label}
+    </Box>
+);
