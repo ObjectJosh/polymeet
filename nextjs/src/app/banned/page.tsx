@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { Box, Typography, TextField, IconButton, Tooltip } from '@mui/material';
+import { Box, Typography, TextField, IconButton, Tooltip, Button } from '@mui/material';
 import { Info as InfoIcon } from '@mui/icons-material';
 
 export default function Banned() {
@@ -23,7 +23,7 @@ export default function Banned() {
                 sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    marginBottom: '20px',
+                    marginBottom: '70px',
                     textAlign: 'center',
                 }}
             >
@@ -57,13 +57,13 @@ export default function Banned() {
             >
                 Think this was a mistake? Submit an appeal here:
             </Typography>
-            <Box sx={{ width: '700px' }}>
+            <Box sx={{ width: '700px', marginBottom: '70px' }}>
                 <TextField
                     fullWidth
                     variant='outlined'
                     placeholder='Your appeal...'
                     multiline
-                    rows={6}
+                    rows={7}
                     InputProps={{
                         style: { color: '#BFCAD8' },
                     }}
@@ -83,6 +83,19 @@ export default function Banned() {
                     }}
                 />
             </Box>
+            <Button
+                variant='contained'
+                sx={{
+                    backgroundColor: '#28a745',
+                    color: 'white',
+                    marginBottom: '40px',
+                    '&:hover': {
+                        backgroundColor: '#218838',
+                    },
+                }}
+            >
+                Submit Appeal
+            </Button>
         </div>
     );
 }
