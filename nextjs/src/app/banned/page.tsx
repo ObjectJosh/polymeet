@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import { Box, Typography, TextField, IconButton, Tooltip, Button } from '@mui/material';
 import { Info as InfoIcon } from '@mui/icons-material';
+import Link from 'next/link';
 
 export default function Banned() {
     return (
@@ -83,19 +84,21 @@ export default function Banned() {
                     }}
                 />
             </Box>
-            <Button
-                variant='contained'
-                sx={{
-                    backgroundColor: '#28a745',
-                    color: 'white',
-                    marginBottom: '40px',
-                    '&:hover': {
-                        backgroundColor: '#218838',
-                    },
-                }}
-            >
-                Submit Appeal
-            </Button>
+            <Link href='/appeal'>
+                <Button
+                    variant='contained'
+                    sx={{
+                        backgroundColor: '#28a745',
+                        color: 'white',
+                        marginBottom: '40px',
+                        '&:hover': {
+                            backgroundColor: '#218838',
+                        },
+                    }}
+                >
+                    Submit Appeal
+                </Button>
+            </Link>
         </div>
     );
 }
