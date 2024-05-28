@@ -1,5 +1,6 @@
 import Head from 'next/head';
-import { Box, Typography, TextField } from '@mui/material';
+import { Box, Typography, TextField, IconButton, Tooltip } from '@mui/material';
+import { Info as InfoIcon } from '@mui/icons-material';
 
 export default function Banned() {
     return (
@@ -18,23 +19,51 @@ export default function Banned() {
             <Head>
                 <title>Banned</title>
             </Head>
-            <Typography
-                variant='h1'
+            <Box
                 sx={{
+                    display: 'flex',
+                    alignItems: 'center',
                     marginBottom: '20px',
-                    color: '#BFCAD8',
-                    fontWeight: 'bold',
-                    fontSize: '60px',
                     textAlign: 'center',
                 }}
             >
-                You have been banned
+                <Typography
+                    variant='h2'
+                    sx={{
+                        color: '#B53737',
+                        fontWeight: 'bold',
+                        fontSize: '60px',
+                    }}
+                >
+                    You have been banned
+                </Typography>
+                <Tooltip
+                    title='Banned users occur as a result of being reported three times by other members of PolyMeet'
+                    arrow
+                >
+                    <IconButton sx={{ color: '#BFCAD8', marginLeft: '10px' }}>
+                        <InfoIcon fontSize='Medium' />
+                    </IconButton>
+                </Tooltip>
+            </Box>
+            <Typography
+                variant='h4'
+                sx={{
+                    marginBottom: '20px',
+                    color: '#BFCAD8',
+                    fontSize: '24px',
+                    textAlign: 'center',
+                }}
+            >
+                Think this was a mistake? Submit an appeal here:
             </Typography>
-            <Box sx={{ width: '300px' }}>
+            <Box sx={{ width: '700px' }}>
                 <TextField
                     fullWidth
                     variant='outlined'
                     placeholder='Your appeal...'
+                    multiline
+                    rows={6}
                     InputProps={{
                         style: { color: '#BFCAD8' },
                     }}
@@ -50,7 +79,7 @@ export default function Banned() {
                                 borderColor: '#BFCAD8',
                             },
                         },
-                        input: { color: 'white' },
+                        textarea: { color: 'white' },
                     }}
                 />
             </Box>
