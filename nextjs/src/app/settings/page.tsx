@@ -40,9 +40,9 @@ export default function Settings() {
     const Tag = ({ label }: { label: string }) => (
         <Box
             sx={{
-                backgroundColor: '#FFD700',
+                backgroundColor: '#F9AD16',
                 padding: '5px 10px',
-                borderRadius: '5px',
+                borderRadius: '10px',
                 color: 'black',
                 marginRight: '10px',
             }}
@@ -107,9 +107,9 @@ export default function Settings() {
                         My Tags
                     </Typography>
                     <Box sx={{ display: 'flex', gap: '10px' }}>
-                        <Tag label='Climbing' />
-                        <Tag label='Climbing' />
-                        <Tag label='Climbing' />
+                        <Tag label='Hiking' />
+                        <Tag label='CSC 357' />
+                        <Tag label='CS+AI' />
                         <IconButton sx={{ marginLeft: '10px' }}>
                             <EditIcon sx={{ color: '#BFCAD8' }} />
                         </IconButton>
