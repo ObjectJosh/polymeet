@@ -23,7 +23,7 @@ export default function Settings() {
         </Typography>
     );
 
-    const Field = ({ label, value }: { label: string, value: string }) => (
+    const Field = ({ label, value }: { label: string; value: string }) => (
         <Box sx={{ marginBottom: '20px' }}>
             <Typography variant='h6' sx={{ color: '#BFCAD8' }}>
                 {label}
@@ -97,7 +97,7 @@ export default function Settings() {
             </nav>
 
             <Header text='Account Settings' />
-            <Box sx={{ padding: '0 400px', marginTop: "3%" }}>
+            <Box sx={{ padding: '0 400px', marginTop: '3%' }}>
                 <Field label='Name' value='Firstname LastName' />
                 <Field label='Email' value='someone@calpoly.edu' />
                 <Field label='Year' value='Second' />
