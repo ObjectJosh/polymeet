@@ -43,7 +43,7 @@ export default function Banned() {
                     arrow
                 >
                     <IconButton sx={{ color: '#BFCAD8', marginLeft: '10px' }}>
-                        <InfoIcon fontSize='Medium' />
+                        <InfoIcon fontSize='medium' />
                     </IconButton>
                 </Tooltip>
             </Box>
