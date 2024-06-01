@@ -68,7 +68,7 @@ const CustomTextField = ({
                 },
             },
             input: {
-                color: '#1E293B', 
+                color: '#1E293B',
             },
             label: {
                 color: '#64748B',

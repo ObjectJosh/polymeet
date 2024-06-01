@@ -13,17 +13,17 @@ import user from './user.png';
 export default function Home() {
     const [isModalOpen, setModalOpen] = useState(false);
     const [isReportSubmitted, setReportSubmitted] = useState(false);
-    
+
     const handleFlagClick = () => {
         setModalOpen(true);
     };
-    
+
     const handleCloseModal = () => {
         setModalOpen(false);
         setReportSubmitted(false);
     };
-    
-    const handleSubmit = (event: { preventDefault: () => void; }) => {
+
+    const handleSubmit = (event: { preventDefault: () => void }) => {
         event.preventDefault();
         // Handle the submit logic here
         setReportSubmitted(true);
