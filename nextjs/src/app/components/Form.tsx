@@ -13,8 +13,8 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
     const [message, setMessage] = useState('');
 
     const [form, setForm] = useState<UserForm>({
-        first_name: userForm.first_name,
-        last_name: userForm.last_name,
+        firstName: userForm.firstName,
+        lastName: userForm.lastName,
         email: userForm.email,
     });
 
@@ -30,8 +30,8 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
                     'Content-Type': contentType,
                 },
                 body: JSON.stringify({
-                    first_name: form.first_name,
-                    last_name: form.last_name,
+                    firstName: form.firstName,
+                    lastName: form.lastName,
                     email: form.email,
                 }),
             });
@@ -61,8 +61,8 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
                     'Content-Type': contentType,
                 },
                 body: JSON.stringify({
-                    first_name: form.first_name,
-                    last_name: form.last_name,
+                    firstName: form.firstName,
+                    lastName: form.lastName,
                     email: form.email,
                 }),
             });
@@ -104,8 +104,8 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
     /* Makes sure user info is filled for the form */
     const formValidate = () => {
         const err: FormError = {} as FormError;
-        if (!form.first_name) err.first_name = 'First name is required';
-        if (!form.last_name) err.last_name = 'Last name is required';
+        if (!form.firstName) err.firstName = 'First name is required';
+        if (!form.lastName) err.lastName = 'Last name is required';
         if (!form.email) err.email = 'Email is required';
         return err;
     };
@@ -113,24 +113,24 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
     return (
         <>
             <form id={formId} onSubmit={handleSubmit} className='flex flex-col w-48'>
-                <label htmlFor='first_name'>First Name</label>
+                <label htmlFor='firstName'>First Name</label>
                 <input
                     className='text-black'
                     type='text'
                     maxLength={60}
-                    name='first_name'
-                    value={form.first_name}
+                    name='firstName'
+                    value={form.firstName}
                     onChange={handleChange}
                     required
                 />
 
-                <label htmlFor='last_name'>Last Name</label>
+                <label htmlFor='lastName'>Last Name</label>
                 <input
                     className='text-black'
                     type='text'
                     maxLength={60}
-                    name='last_name'
-                    value={form.last_name}
+                    name='lastName'
+                    value={form.lastName}
                     onChange={handleChange}
                     required
                 />
