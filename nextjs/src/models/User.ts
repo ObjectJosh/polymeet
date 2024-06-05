@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 export interface User extends mongoose.Document {
-    userId: string;
+    // _id: string;
     email: string;
     password: string;
     firstName: string;
@@ -17,11 +17,11 @@ export interface User extends mongoose.Document {
 }
 
 const UserSchema = new mongoose.Schema<User>({
-    userId: {
+    /* _id: {
         type: String,
         required: [true, 'Please provide a user ID for this user.'],
         unique: true,
-    },
+    }, */
     email: {
         type: String,
         required: [true, 'Please provide an email for this user.'],
