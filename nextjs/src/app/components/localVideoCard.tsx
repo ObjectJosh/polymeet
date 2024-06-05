@@ -1,5 +1,7 @@
 import { getLocalStream } from './webrtc';
 import React, { useRef, useState, useEffect } from 'react';
+import { Videocam, VideocamOff, Mic, MicOff } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
 
 const LocalVideoCard = () => {
     /* Whether video is streamed */
@@ -28,8 +30,7 @@ const LocalVideoCard = () => {
 
     // stops the user's media stream
     const stopStream = async () => {
-      setVideo(false);
-      
+        setVideo(false);
     };
 
     // enable/disable audio tracks in the media stream
@@ -38,27 +39,56 @@ const LocalVideoCard = () => {
     };
 
     useEffect(() => {
-      console.log('Video state:', video);
-      console.log('Audio state:', audio);
-      if (video || audio) {
-        getLocalStream(video, audio).then((stream) => {
-          console.log('Stream:', stream);
-          setVideoRef(stream);
-        });
-      } else {
-        setVideoRef(null);
-      }
+        console.log('Video state:', video);
+        console.log('Audio state:', audio);
+        if (video || audio) {
+            getLocalStream(video, audio).then((stream) => {
+                console.log('Stream:', stream);
+                setVideoRef(stream);
+            });
+        } else {
+            setVideoRef(null);
+        }
     }, [video, audio]);
 
     return (
         <>
-            <video ref={videoRef} autoPlay={true} muted={false} playsInline></video>
-            <button onClick={video ? stopStream : startStream}>
-              {video ? 'Stop' : 'Start'} webcam
-            </button>
-            <button onClick={toggleAudio}>
-              {audio ? 'Stop' : 'Start'} Audio
-            </button>
+            <div
+                style={{
+                    width: 700,
+                    height: 325,
+                    background: '#475569',
+                    padding: '10px',
+                    borderRadius: '10px',
+                    marginBottom: '10px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    position: 'relative',
+                }}
+            >
+                <p style={{ position: 'absolute', left: 20, top: 20 }}>You</p>
+                <video
+                    ref={videoRef}
+                    autoPlay={true}
+                    muted={false}
+                    playsInline
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: '10px',
+                        objectFit: 'cover',
+                    }}
+                ></video>
+                <div style={{ position: 'absolute', bottom: 10, left: 10, display: 'flex', gap: '10px' }}>
+                    <IconButton onClick={video ? stopStream : startStream} color='primary'>
+                        {video ? <Videocam /> : <VideocamOff />}
+                    </IconButton>
+                    <IconButton onClick={toggleAudio} color='primary'>
+                        {audio ? <Mic /> : <MicOff />}
+                    </IconButton>
+                </div>
+            </div>
         </>
     );
 };

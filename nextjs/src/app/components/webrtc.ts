@@ -47,7 +47,6 @@ export async function getLocalStream(video: boolean, audio: boolean): Promise<Me
 }
 
 export async function getRemoteStream(): Promise<MediaStream> {
-  remoteStream = new MediaStream();
-  
-
+    remoteStream = new MediaStream();
+    return remoteStream; // Add this line to fix the error
 }
