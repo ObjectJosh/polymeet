@@ -42,7 +42,7 @@ export default function Home() {
                     borderBottom: '2px solid #BFCAD8',
                     height: '50px',
                     marginBottom: '20px',
-                    padding: '5px',
+                    padding: '20px',
                 }}
             >
                 <a href='/' style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
