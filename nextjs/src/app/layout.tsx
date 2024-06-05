@@ -19,7 +19,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang='en' className="dark">
+        <html lang='en' className='dark'>
             <KindeProvider
                 clientId='6bc13eb11a624633b2c640ad80ec5244'
                 domain='https://polymeet.kinde.com'

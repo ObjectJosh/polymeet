@@ -79,7 +79,6 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
         }
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleChange = (e: any) => {
         const target = e.target;
         const value = target.name === 'poddy_trained' ? target.checked : target.value;
