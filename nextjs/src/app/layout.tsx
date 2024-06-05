@@ -2,6 +2,8 @@
 // import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { KindeProvider } from '@kinde-oss/kinde-auth-react';
+import { Toaster } from '@/components/ui/toaster';
+
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -17,14 +19,17 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang='en'>
+        <html lang='en' className="dark">
             <KindeProvider
                 clientId='6bc13eb11a624633b2c640ad80ec5244'
                 domain='https://polymeet.kinde.com'
                 logoutUri='http://localhost:3000'
                 redirectUri='http://localhost:3000/chat'
             >
-                <body className={inter.className}>{children}</body>
+                <body className={inter.className}>
+                    {children}
+                    <Toaster />
+                </body>
             </KindeProvider>
         </html>
     );

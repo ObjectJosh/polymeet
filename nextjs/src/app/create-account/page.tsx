@@ -1,9 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField, Typography, MenuItem, SxProps } from '@mui/material';
 import ProgressBar from './progressBar';
 import majorsData from './majors.json';
+import { RegisterLink } from '@kinde-oss/kinde-auth-nextjs/components';
+import { useSearchParams } from 'next/navigation';
+import { useToast } from '@/components/ui/use-toast';
+import { Spinner } from '@/components/ui/spinner';
 
 const tags = {
     Hobbies: [
@@ -136,17 +140,28 @@ const CreateAccount: React.FC = () => {
     const [step, setStep] = useState(1);
     const [email, setEmail] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
+    const [emailValid, setEmailValid] = useState(false);
     const [fullName, setFullName] = useState('');
     const [major, setMajor] = useState('');
     const [year, setYear] = useState('');
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const totalSteps = 5;
+    const searchParams = useSearchParams();
+    const { toast } = useToast();
+
+    useEffect(() => {
+        // Sets the page based on url's search params (on load)
+        const p = searchParams.get('page');
+        if (p) {
+            setStep(parseInt(p));
+        }
+    }, [searchParams]);
 
     const handleNext = () => {
         if (step < totalSteps) {
             setStep(step + 1);
         } else {
-            window.location.href = '/';
+            window.location.href = '/chat';
         }
     };
 
@@ -156,6 +171,25 @@ const CreateAccount: React.FC = () => {
         } else if (selectedTags.length < 3) {
             setSelectedTags([...selectedTags, tag]);
         }
+    };
+
+    // const validateEmail = () => {
+    //     if (!email?.endsWith('@calpoly.edu')) {
+    //         toast({
+    //             title: 'Error: Please enter a @calpoly.edu email',
+    //         });
+    //     }
+    //     return email?.endsWith('@calpoly.edu');
+    // };
+
+    const validateEmail = (_email: string) => {
+        return _email?.endsWith('@calpoly.edu');
+    };
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newEmail = e.target.value;
+        setEmail(newEmail);
+        setEmailValid(validateEmail(newEmail))
     };
 
     const renderStepContent = (step: number) => {
@@ -177,7 +211,7 @@ const CreateAccount: React.FC = () => {
                         >
                             Enter your email address
                         </Typography>
-                        <CustomTextField label='' value={email} onChange={(e) => setEmail(e.target.value)} />
+                        <CustomTextField label='' value={email} onChange={handleEmailChange} />
                         <Typography
                             sx={{
                                 marginBottom: '20px',
@@ -191,34 +225,34 @@ const CreateAccount: React.FC = () => {
                         >
                             *must be a @calpoly.edu domain
                         </Typography>
-                        <CustomButton onClick={() => email && handleNext()}>Next →</CustomButton>
+                        {emailValid ? (
+                            <RegisterLink
+                                postLoginRedirectURL='/create-account?page=3'
+                                authUrlParams={{
+                                    connection_id: process.env.NEXT_PUBLIC_KINDE_CONNECTION_EMAIL_PASSWORDLESS || '',
+                                    login_hint: email,
+                                }}
+                            >
+                                <CustomButton onClick={() => email && handleNext()}>Next →</CustomButton>
+                            </RegisterLink>
+                        ) : (
+                            <CustomButton
+                                onClick={() => {
+                                    toast({
+                                        title: 'Error: Please enter a @calpoly.edu email',
+                                    });
+                                }}
+                            >
+                                Next →
+                            </CustomButton>
+                        )}
                     </>
                 );
-            case 2: // enter verification code
+            case 2: // Loading to direct to kinde
                 return (
-                    <>
-                        <Header text='Create your account' />
-                        <Typography
-                            sx={{
-                                marginBottom: '0',
-                                marginTop: '5rem',
-                                color: '#BFCAD8',
-                                fontWeight: 'regular',
-                                fontSize: '24px',
-                                letterSpacing: '-0.6%',
-                                paddingRight: '440px',
-                            }}
-                        >
-                            Enter verification code sent to:{' '}
-                            <span style={{ textDecoration: 'underline' }}>someone@calpoly.edu</span>{' '}
-                        </Typography>
-                        <CustomTextField
-                            label=''
-                            value={verificationCode}
-                            onChange={(e) => setVerificationCode(e.target.value)}
-                        />
-                        <CustomButton onClick={() => verificationCode && handleNext()}>Next →</CustomButton>
-                    </>
+                    <div className="w-full h-full flex items-center justify-center">
+                        <Spinner/>
+                    </div>
                 );
             case 3: // enter full name
                 return (
