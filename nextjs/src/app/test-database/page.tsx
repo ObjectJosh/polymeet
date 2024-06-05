@@ -2,8 +2,8 @@ import Form from '../components/Form';
 
 const NewUser = () => {
     const userForm = {
-        first_name: '',
-        last_name: '',
+        firstName: '',
+        lastName: '',
         email: '',
     };
 
