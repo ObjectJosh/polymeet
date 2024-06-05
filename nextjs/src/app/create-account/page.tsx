@@ -250,8 +250,8 @@ const CreateAccount: React.FC = () => {
                 );
             case 2: // Loading to direct to kinde
                 return (
-                    <div className='w-full h-full flex items-center justify-center'>
-                        <Spinner />
+                    <div className="w-full h-full flex items-center justify-center">
+                        <Spinner/>
                     </div>
                 );
             case 3: // enter full name
