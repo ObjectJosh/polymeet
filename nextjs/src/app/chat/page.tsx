@@ -40,8 +40,9 @@ export default function Home() {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     borderBottom: '2px solid #BFCAD8',
-                    height: '60px',
-                    marginBottom: '30px',
+                    height: '50px',
+                    marginBottom: '20px',
+                    padding: '20px',
                 }}
             >
                 <a href='/' style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
@@ -60,7 +61,7 @@ export default function Home() {
                     <div
                         style={{
                             width: 700,
-                            height: 325,
+                            height: 300,
                             background: '#475569',
                             padding: '10px',
                             borderRadius: '10px',
@@ -76,7 +77,7 @@ export default function Home() {
                     <div
                         style={{
                             width: 700,
-                            height: 325,
+                            height: 300,
                             background: '#475569',
                             padding: '10px',
                             borderRadius: '10px',
