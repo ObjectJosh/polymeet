@@ -4,6 +4,7 @@ import { Box, Button, Typography, Link } from '@mui/material';
 import styles from './welcomePage.module.css';
 // import { RegisterLink, LoginLink } from '@kinde-oss/kinde-auth-nextjs/components';
 import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
+import { LoginLink } from '@kinde-oss/kinde-auth-nextjs/components';
 
 const WelcomePage: React.FC = () => {
     const { login, register } = useKindeAuth();
@@ -34,13 +35,13 @@ const WelcomePage: React.FC = () => {
                     mt: 10,
                 }}
                 href='/create-account'
-                onClick={register}
+                // onClick={register}
             >
                 Get Started →
             </Button>
             <Typography variant='body1' sx={{ mt: 2 }}>
                 Returning? Sign in{' '}
-                <Link sx={{ color: '#4285F4' }} onClick={login}>
+                <Link sx={{ color: '#4285F4' }} href='/sign-in'>
                     here
                 </Link>
             </Typography>
