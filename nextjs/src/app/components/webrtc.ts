@@ -35,17 +35,19 @@ const servers = {
     ],
     iceCandidatePoolSize: 10,
 };
+let localStream: MediaStream | null = null;
+let remoteStream: MediaStream | null = null;
 
-export async function getLocalStream() {
-  let localStream: MediaStream | null = null;
+export async function getLocalStream(video: boolean, audio: boolean): Promise<MediaStream> {
     localStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
+        video: video,
+        audio: audio,
     });
     return localStream;
 }
 
 export async function getRemoteStream(): Promise<MediaStream> {
-  let remoteStream: MediaStream | null = null;
-    return remoteStream;
+  remoteStream = new MediaStream();
+  
+
 }
