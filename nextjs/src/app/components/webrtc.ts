@@ -1,5 +1,6 @@
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+
+import { initializeApp } from 'firebase/app';
+import  { getFirestore }from 'firebase/firestore';
 
 export const ENV = {
     FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -23,11 +24,8 @@ const firebaseConfig = {
     measurementId: ENV.FIREBASE_MEASUREMENT_ID,
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-
-const firestore = firebase.firestore();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 const servers = {
     iceServers: [
@@ -38,26 +36,16 @@ const servers = {
     iceCandidatePoolSize: 10,
 };
 
-// Global State
-const pc = new RTCPeerConnection(servers);
-
-export let remoteStream: MediaStream | null = null;
-
 export function getLocalStream() {
+  let localStream: MediaStream | null = null;
     localStream = navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
     });
+    return localStream;
 }
 
 export function getRemoteStream(): Promise<MediaStream> {
-  return new Promise((resolve, reject) => {
-    remoteStream = new MediaStream();
-    pc.ontrack = (event) => {
-      event.streams[0].getTracks().forEach((track) => {
-        remoteStream?.addTrack(track);
-      });
-
-    };
-  }
+  let remoteStream: MediaStream | null = null;
+    return remoteStream;
 }

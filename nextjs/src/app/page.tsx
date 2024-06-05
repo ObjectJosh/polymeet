@@ -8,6 +8,7 @@ import { FaFlag } from 'react-icons/fa6';
 import { FaCog } from 'react-icons/fa';
 import { FaArrowRight } from 'react-icons/fa';
 import VideoCard from "@/app/components/videocard";
+import LocalVideoCard from "@/app/components/localVideoCard";
 import { remoteStream } from "@/app/webrtc";
 
 import user from './user.png';
@@ -60,23 +61,8 @@ export default function Home() {
 
             <div style={{ display: 'flex', marginTop: '20px' }}>
                 <div style={{ flex: 1 }}>
-                    <div
-                        style={{
-                            width: 700,
-                            height: 325,
-                            background: '#475569',
-                            padding: '10px',
-                            borderRadius: '10px',
-                            marginBottom: '10px',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            position: 'relative',
-                        }}
-                    >
-                        <p style={{ position: 'absolute', left: 10, top: 10 }}>Lacy Smith</p>
-                    </div>
                     <VideoCard />
+                    <LocalVideoCard />
                     <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
                         <button
                             style={{
