@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export interface UserForm {
-    first_name: string;
-    last_name: string;
+    firstName: string;
+    lastName: string;
     email: string;
 }
 
@@ -14,8 +14,8 @@ export interface FormProps {
 
 export interface UsersType {
     _id: string;
-    first_name: string;
-    last_name: string;
+    firstName: string;
+    lastName: string;
     email: string;
 }
 
