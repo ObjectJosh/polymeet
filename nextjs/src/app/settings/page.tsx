@@ -65,6 +65,7 @@ export default function Settings() {
         label,
         value,
         onChange,
+        onBlur,
         type = 'text',
         select = false,
         options = [],
@@ -249,6 +250,7 @@ export default function Settings() {
                     label='Year'
                     value={year}
                     onChange={(e) => setYear(e.target.value)}
+                    onBlur={() => handleSave('year', year)}
                     select
                     options={['First', 'Second', 'Third', 'Fourth', 'Fifth+']}
                     editMode={editMode.year}
@@ -259,6 +261,7 @@ export default function Settings() {
                     label='Major'
                     value={major}
                     onChange={(e) => setMajor(e.target.value)}
+                    onBlur={() => handleSave('major', major)}
                     select
                     options={majorsData.majors}
                     editMode={editMode.major}
