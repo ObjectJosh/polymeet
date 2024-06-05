@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Box, Button, TextField, Typography, MenuItem, SxProps } from '@mui/material';
 import ProgressBar from './progressBar';
 import majorsData from './majors.json';
@@ -172,15 +172,6 @@ const CreateAccount: React.FC = () => {
             setSelectedTags([...selectedTags, tag]);
         }
     };
-
-    // const validateEmail = () => {
-    //     if (!email?.endsWith('@calpoly.edu')) {
-    //         toast({
-    //             title: 'Error: Please enter a @calpoly.edu email',
-    //         });
-    //     }
-    //     return email?.endsWith('@calpoly.edu');
-    // };
 
     const validateEmail = (_email: string) => {
         return _email?.endsWith('@calpoly.edu');
@@ -425,4 +416,12 @@ const CreateAccount: React.FC = () => {
     );
 };
 
-export default CreateAccount;
+const CreateAccountWrapper = () => {
+    return (
+        <Suspense fallback={<p>Loading...</p>}>
+            <CreateAccount />
+        </Suspense>
+    );
+};
+
+export default CreateAccountWrapper;
