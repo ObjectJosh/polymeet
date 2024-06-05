@@ -57,55 +57,25 @@ export default function Home() {
             </nav>
 
             <div style={{ display: 'flex', marginTop: '20px' }}>
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 1, marginRight: '20px' }}>
                     <div
                         style={{
-                            width: 700,
-                            height: 325,
+                            width: '100%',
+                            height: 'calc(100vh - 120px)',
                             background: '#475569',
                             padding: '10px',
                             borderRadius: '10px',
-                            marginBottom: '10px',
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
                             position: 'relative',
                         }}
                     >
-                        <p style={{ position: 'absolute', left: 10, top: 10 }}>Lacy Smith</p>
-                    </div>
-                    <div
-                        style={{
-                            width: 700,
-                            height: 325,
-                            background: '#475569',
-                            padding: '10px',
-                            borderRadius: '10px',
-                            marginBottom: '10px',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            position: 'relative',
-                        }}
-                    >
-                        <p style={{ position: 'absolute', left: 10, top: 10 }}>You</p>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
-                        <button
-                            style={{
-                                padding: '5px 50px',
-                                fontSize: '16px',
-                                cursor: 'pointer',
-                                backgroundColor: '#0D99FF',
-                                borderRadius: 20,
-                            }}
-                        >
-                            Skip
-                        </button>
+                        <p style={{ position: 'absolute', left: 10, top: 10 }}>Video Streaming Component</p>
                     </div>
                 </div>
 
-                <div style={{ flex: 2, marginLeft: '20px', position: 'relative' }}>
+                <div style={{ flex: 1.5, position: 'relative' }}>
                     <div
                         style={{
                             backgroundColor: '#070D1B',
@@ -172,6 +142,8 @@ export default function Home() {
                             display: 'flex',
                             flexDirection: 'column',
                             gap: '10px',
+                            height: 'calc(100vh - 240px)',
+                            overflowY: 'auto',
                         }}
                     >
                         <div

@@ -1,10 +1,25 @@
+'use client';
+import React, { useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
-import { Typography, IconButton, Box } from '@mui/material';
+import { Typography, IconButton, Box, TextField, MenuItem, Button } from '@mui/material';
 import { Edit as EditIcon } from '@mui/icons-material';
 import user from '../user.png';
+import majorsData from './majors.json';
 
 export default function Settings() {
+    const [editMode, setEditMode] = useState({
+        name: false,
+        email: false,
+        year: false,
+        major: false,
+        tags: false,
+    });
+    const [name, setName] = useState('Firstname LastName');
+    const [email, setEmail] = useState('someone@calpoly.edu');
+    const [year, setYear] = useState('Second');
+    const [major, setMajor] = useState('Computer Science');
+
     const Header = ({ text }: { text: string }) => (
         <Typography
             variant='h1'
@@ -23,17 +38,108 @@ export default function Settings() {
         </Typography>
     );
 
-    const Field = ({ label, value }: { label: string; value: string }) => (
+    const Field = ({
+        label,
+        value,
+        onChange,
+        type = 'text',
+        select = false,
+        options = [],
+        editMode,
+        toggleEditMode,
+    }: {
+        label: string;
+        value: string;
+        onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+        type?: string;
+        select?: boolean;
+        options?: string[];
+        editMode: boolean;
+        toggleEditMode: () => void;
+    }) => (
         <Box sx={{ marginBottom: '20px' }}>
             <Typography variant='h6' sx={{ color: '#BFCAD8' }}>
                 {label}
             </Typography>
-            <Typography variant='body1' sx={{ display: 'flex', alignItems: 'center', color: '#BFCAD8' }}>
-                {value}
-                <IconButton sx={{ marginLeft: '10px' }}>
-                    <EditIcon sx={{ color: '#BFCAD8' }} />
-                </IconButton>
-            </Typography>
+            {editMode ? (
+                select ? (
+                    <TextField
+                        select
+                        value={value}
+                        onChange={onChange}
+                        variant='outlined'
+                        fullWidth
+                        sx={{
+                            width: '70%',
+                            marginBottom: '10px',
+                            backgroundColor: '#E2E8F0',
+                            borderRadius: '8px',
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: '#334155',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: '#006155',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: '#006155',
+                                },
+                            },
+                            input: {
+                                color: '#1E293B',
+                            },
+                            label: {
+                                color: '#64748B',
+                            },
+                        }}
+                    >
+                        {options.map((option) => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                ) : (
+                    <TextField
+                        value={value}
+                        onChange={onChange}
+                        variant='outlined'
+                        fullWidth
+                        sx={{
+                            width: '70%',
+                            marginBottom: '10px',
+                            backgroundColor: '#E2E8F0',
+                            borderRadius: '8px',
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: '#334155',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: '#006155',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: '#006155',
+                                },
+                            },
+                            input: {
+                                color: '#1E293B',
+                            },
+                            label: {
+                                color: '#64748B',
+                            },
+                        }}
+                    />
+                )
+            ) : (
+                <Typography variant='body1' sx={{ display: 'flex', alignItems: 'center', color: '#BFCAD8' }}>
+                    {value}
+                    {label !== 'Email' && ( // Only show the pencil icon if the label is not 'Email'
+                        <IconButton sx={{ marginLeft: '10px' }} onClick={toggleEditMode}>
+                            <EditIcon sx={{ color: '#BFCAD8' }} />
+                        </IconButton>
+                    )}
+                </Typography>
+            )}
         </Box>
     );
 
@@ -50,6 +156,13 @@ export default function Settings() {
             {label}
         </Box>
     );
+
+    const toggleEditMode = (field: string) => {
+        setEditMode((prevEditMode) => ({
+            ...prevEditMode,
+            [field]: !prevEditMode[field],
+        }));
+    };
 
     return (
         <div
@@ -98,10 +211,38 @@ export default function Settings() {
 
             <Header text='Account Settings' />
             <Box sx={{ padding: '0 400px', marginTop: '3%' }}>
-                <Field label='Name' value='Firstname LastName' />
-                <Field label='Email' value='someone@calpoly.edu' />
-                <Field label='Year' value='Second' />
-                <Field label='Major' value='Computer Science' />
+                <Field
+                    label='Name'
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    editMode={editMode.name}
+                    toggleEditMode={() => toggleEditMode('name')}
+                />
+                <Field
+                    label='Email'
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    // editMode={editMode.email}
+                    // toggleEditMode={() => toggleEditMode('email')}
+                />
+                <Field
+                    label='Year'
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                    select
+                    options={['First', 'Second', 'Third', 'Fourth', 'Fifth+']}
+                    editMode={editMode.year}
+                    toggleEditMode={() => toggleEditMode('year')}
+                />
+                <Field
+                    label='Major'
+                    value={major}
+                    onChange={(e) => setMajor(e.target.value)}
+                    select
+                    options={majorsData.majors}
+                    editMode={editMode.major}
+                    toggleEditMode={() => toggleEditMode('major')}
+                />
                 <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
                     <Typography variant='h6' sx={{ color: '#BFCAD8', marginRight: '10px' }}>
                         My Tags
@@ -110,7 +251,7 @@ export default function Settings() {
                         <Tag label='Hiking' />
                         <Tag label='CSC 357' />
                         <Tag label='CS+AI' />
-                        <IconButton sx={{ marginLeft: '10px' }}>
+                        <IconButton sx={{ marginLeft: '10px' }} href='/tags'>
                             <EditIcon sx={{ color: '#BFCAD8' }} />
                         </IconButton>
                     </Box>
