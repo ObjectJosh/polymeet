@@ -20,7 +20,30 @@ export default function Settings() {
     const [year, setYear] = useState('Second');
     const [major, setMajor] = useState('Computer Science');
 
-    const Header = ({ text }: { text: string }) => (
+    const handleSave = (field, value) => {
+        switch (field) {
+            case 'name':
+                setName(value);
+                break;
+            case 'email':
+                setEmail(value);
+                break;
+            case 'year':
+                setYear(value);
+                break;
+            case 'major':
+                setMajor(value);
+                break;
+            default:
+                break;
+        }
+        setEditMode((prevEditMode) => ({
+            ...prevEditMode,
+            [field]: false,
+        }));
+    };
+
+    const Header = ({ text }) => (
         <Typography
             variant='h1'
             sx={{
@@ -47,15 +70,7 @@ export default function Settings() {
         options = [],
         editMode,
         toggleEditMode,
-    }: {
-        label: string;
-        value: string;
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-        type?: string;
-        select?: boolean;
-        options?: string[];
-        editMode: boolean;
-        toggleEditMode: () => void;
+        field,
     }) => (
         <Box sx={{ marginBottom: '20px' }}>
             <Typography variant='h6' sx={{ color: '#BFCAD8' }}>
@@ -67,6 +82,7 @@ export default function Settings() {
                         select
                         value={value}
                         onChange={onChange}
+                        onBlur={() => handleSave(field, value)}
                         variant='outlined'
                         fullWidth
                         sx={{
@@ -103,8 +119,10 @@ export default function Settings() {
                     <TextField
                         value={value}
                         onChange={onChange}
+                        onBlur={() => handleSave(field, value)}
                         variant='outlined'
                         fullWidth
+                        autoFocus
                         sx={{
                             width: '70%',
                             marginBottom: '10px',
@@ -133,7 +151,7 @@ export default function Settings() {
             ) : (
                 <Typography variant='body1' sx={{ display: 'flex', alignItems: 'center', color: '#BFCAD8' }}>
                     {value}
-                    {label !== 'Email' && ( // Only show the pencil icon if the label is not 'Email'
+                    {label !== 'Email' && (
                         <IconButton sx={{ marginLeft: '10px' }} onClick={toggleEditMode}>
                             <EditIcon sx={{ color: '#BFCAD8' }} />
                         </IconButton>
@@ -143,7 +161,7 @@ export default function Settings() {
         </Box>
     );
 
-    const Tag = ({ label }: { label: string }) => (
+    const Tag = ({ label }) => (
         <Box
             sx={{
                 backgroundColor: '#F9AD16',
@@ -157,7 +175,7 @@ export default function Settings() {
         </Box>
     );
 
-    const toggleEditMode = (field: string) => {
+    const toggleEditMode = (field) => {
         setEditMode((prevEditMode) => ({
             ...prevEditMode,
             [field]: !prevEditMode[field],
@@ -217,13 +235,15 @@ export default function Settings() {
                     onChange={(e) => setName(e.target.value)}
                     editMode={editMode.name}
                     toggleEditMode={() => toggleEditMode('name')}
+                    field='name'
                 />
                 <Field
                     label='Email'
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    // editMode={editMode.email}
-                    // toggleEditMode={() => toggleEditMode('email')}
+                    editMode={editMode.email}
+                    toggleEditMode={() => toggleEditMode('email')}
+                    field='email'
                 />
                 <Field
                     label='Year'
@@ -233,6 +253,7 @@ export default function Settings() {
                     options={['First', 'Second', 'Third', 'Fourth', 'Fifth+']}
                     editMode={editMode.year}
                     toggleEditMode={() => toggleEditMode('year')}
+                    field='year'
                 />
                 <Field
                     label='Major'
@@ -242,6 +263,7 @@ export default function Settings() {
                     options={majorsData.majors}
                     editMode={editMode.major}
                     toggleEditMode={() => toggleEditMode('major')}
+                    field='major'
                 />
                 <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
                     <Typography variant='h6' sx={{ color: '#BFCAD8', marginRight: '10px' }}>
