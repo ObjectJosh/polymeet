@@ -185,7 +185,7 @@ const CreateAccount: React.FC = () => {
             await axios.post('/api/users', newUser);
             console.log('User created successfully, redirecting...');
             window.location.href = '/chat';
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error creating user account:', error.message);
             toast({
                 title: 'Error: Unable to create account',
