@@ -92,10 +92,7 @@ export default function Settings() {
                         padding: '10px 20px',
                         cursor: 'pointer',
                     }}
-                    onClick={() => {
-                        console.log('logout');
-                        logout();
-                    }}
+                    onClick={logout}
                     type='button'
                 >
                     Log Out

@@ -21,10 +21,10 @@ export default function RootLayout({
     return (
         <html lang='en' className='dark'>
             <KindeProvider
-                clientId={process.env.KINDE_CLIENT_ID}
-                domain={process.env.KINDE_ISSUER_URL}
-                logoutUri={process.env.KINDE_POST_LOGOUT_REDIRECT_URI}
-                redirectUri={process.env.KINDE_POST_LOGIN_REDIRECT_URI}
+                clientId={process.env.NEXT_PUBLIC_KINDE_CLIENT_ID}
+                domain={process.env.NEXT_PUBLIC_KINDE_ISSUER_URL}
+                logoutUri={process.env.NEXT_PUBLIC_KINDE_POST_LOGOUT_REDIRECT_URL}
+                redirectUri={process.env.NEXT_PUBLIC_KINDE_POST_LOGIN_REDIRECT_URL}
             >
                 <body className={inter.className}>
                     {children}
