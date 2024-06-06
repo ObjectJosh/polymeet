@@ -130,7 +130,7 @@ const SignIn: React.FC = () => {
             </Typography>
             <CustomTextField label='' value={email} onChange={(e) => setEmail(e.target.value)} />
             <LoginLink
-                loginRedirectURL='/chat'
+                postLoginRedirectURL='/chat'
                 authUrlParams={{
                     connection_id: process.env.NEXT_PUBLIC_KINDE_CONNECTION_EMAIL_PASSWORDLESS || '',
                     login_hint: email,
