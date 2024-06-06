@@ -8,6 +8,7 @@ import { RegisterLink } from '@kinde-oss/kinde-auth-nextjs/components';
 import { useSearchParams } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 import { Spinner } from '@/components/ui/spinner';
+import axios from 'axios';
 
 const tags = {
     Hobbies: [
@@ -157,11 +158,39 @@ const CreateAccount: React.FC = () => {
         }
     }, [searchParams]);
 
-    const handleNext = () => {
+    const handleNext = async () => {
+        console.log('Step:', step); // Log current step
         if (step < totalSteps) {
             setStep(step + 1);
-        } else {
+            return; // Early return if step is less than totalSteps
+        }
+
+        try {
+            const fullNameParts = fullName.split(' ');
+            const firstName = fullNameParts[0];
+            const lastName = fullNameParts.slice(1).join(' ');
+
+            const newUser = {
+                email,
+                firstName,
+                lastName,
+                major,
+                year,
+                hobbies: selectedTags.filter((tag) => tags.Hobbies.includes(tag)),
+                classes: selectedTags.filter((tag) => tags.Classes.includes(tag)),
+                clubs: selectedTags.filter((tag) => tags.Clubs.includes(tag)),
+            };
+
+            console.log('Sending user data to API:', newUser);
+            await axios.post('/api/users', newUser);
+            console.log('User created successfully, redirecting...');
             window.location.href = '/chat';
+        } catch (error) {
+            console.error('Error creating user account:', error.message);
+            toast({
+                title: 'Error: Unable to create account',
+                description: error.message,
+            });
         }
     };
 
