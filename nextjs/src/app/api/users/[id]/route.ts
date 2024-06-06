@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import User from '@/models/User';
-import { ApiWithIdParam } from '@/types/types';
+import { ApiWithIdParam, IError } from '@/types/types';
 
 /* Get a model by its ID */
 export async function GET(req: NextRequest, { params }: ApiWithIdParam) {
