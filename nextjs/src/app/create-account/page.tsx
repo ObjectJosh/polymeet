@@ -1,9 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Box, Button, TextField, Typography, MenuItem, SxProps } from '@mui/material';
 import ProgressBar from './progressBar';
 import majorsData from './majors.json';
+import { RegisterLink } from '@kinde-oss/kinde-auth-nextjs/components';
+import { useSearchParams } from 'next/navigation';
+import { useToast } from '@/components/ui/use-toast';
+import { Spinner } from '@/components/ui/spinner';
+import axios from 'axios';
 
 const tags = {
     Hobbies: [
@@ -136,17 +141,56 @@ const CreateAccount: React.FC = () => {
     const [step, setStep] = useState(1);
     const [email, setEmail] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
+    const [emailValid, setEmailValid] = useState(false);
     const [fullName, setFullName] = useState('');
     const [major, setMajor] = useState('');
     const [year, setYear] = useState('');
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const totalSteps = 5;
+    const searchParams = useSearchParams();
+    const { toast } = useToast();
 
-    const handleNext = () => {
+    useEffect(() => {
+        // Sets the page based on url's search params (on load)
+        const p = searchParams.get('page');
+        if (p) {
+            setStep(parseInt(p));
+        }
+    }, [searchParams]);
+
+    const handleNext = async () => {
+        console.log('Step:', step); // Log current step
         if (step < totalSteps) {
             setStep(step + 1);
-        } else {
-            window.location.href = '/';
+            return; // Early return if step is less than totalSteps
+        }
+
+        try {
+            const fullNameParts = fullName.split(' ');
+            const firstName = fullNameParts[0];
+            const lastName = fullNameParts.slice(1).join(' ');
+
+            const newUser = {
+                email,
+                firstName,
+                lastName,
+                major,
+                year,
+                hobbies: selectedTags.filter((tag) => tags.Hobbies.includes(tag)),
+                classes: selectedTags.filter((tag) => tags.Classes.includes(tag)),
+                clubs: selectedTags.filter((tag) => tags.Clubs.includes(tag)),
+            };
+
+            console.log('Sending user data to API:', newUser);
+            await axios.post('/api/users', newUser);
+            console.log('User created successfully, redirecting...');
+            window.location.href = '/chat';
+        } catch (error: any) {
+            console.error('Error creating user account:', error.message);
+            toast({
+                title: 'Error: Unable to create account',
+                description: error.message,
+            });
         }
     };
 
@@ -156,6 +200,16 @@ const CreateAccount: React.FC = () => {
         } else if (selectedTags.length < 3) {
             setSelectedTags([...selectedTags, tag]);
         }
+    };
+
+    const validateEmail = (_email: string) => {
+        return _email?.endsWith('@calpoly.edu');
+    };
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newEmail = e.target.value;
+        setEmail(newEmail);
+        setEmailValid(validateEmail(newEmail));
     };
 
     const renderStepContent = (step: number) => {
@@ -177,7 +231,7 @@ const CreateAccount: React.FC = () => {
                         >
                             Enter your email address
                         </Typography>
-                        <CustomTextField label='' value={email} onChange={(e) => setEmail(e.target.value)} />
+                        <CustomTextField label='' value={email} onChange={handleEmailChange} />
                         <Typography
                             sx={{
                                 marginBottom: '20px',
@@ -191,34 +245,34 @@ const CreateAccount: React.FC = () => {
                         >
                             *must be a @calpoly.edu domain
                         </Typography>
-                        <CustomButton onClick={() => email && handleNext()}>Next →</CustomButton>
+                        {emailValid ? (
+                            <RegisterLink
+                                postLoginRedirectURL='/create-account?page=3'
+                                authUrlParams={{
+                                    connection_id: process.env.NEXT_PUBLIC_KINDE_CONNECTION_EMAIL_PASSWORDLESS || '',
+                                    login_hint: email,
+                                }}
+                            >
+                                <CustomButton onClick={() => email && handleNext()}>Next →</CustomButton>
+                            </RegisterLink>
+                        ) : (
+                            <CustomButton
+                                onClick={() => {
+                                    toast({
+                                        title: 'Error: Please enter a @calpoly.edu email',
+                                    });
+                                }}
+                            >
+                                Next →
+                            </CustomButton>
+                        )}
                     </>
                 );
-            case 2: // enter verification code
+            case 2: // Loading to direct to kinde
                 return (
-                    <>
-                        <Header text='Create your account' />
-                        <Typography
-                            sx={{
-                                marginBottom: '0',
-                                marginTop: '5rem',
-                                color: '#BFCAD8',
-                                fontWeight: 'regular',
-                                fontSize: '24px',
-                                letterSpacing: '-0.6%',
-                                paddingRight: '440px',
-                            }}
-                        >
-                            Enter verification code sent to:{' '}
-                            <span style={{ textDecoration: 'underline' }}>someone@calpoly.edu</span>{' '}
-                        </Typography>
-                        <CustomTextField
-                            label=''
-                            value={verificationCode}
-                            onChange={(e) => setVerificationCode(e.target.value)}
-                        />
-                        <CustomButton onClick={() => verificationCode && handleNext()}>Next →</CustomButton>
-                    </>
+                    <div className='w-full h-full flex items-center justify-center'>
+                        <Spinner />
+                    </div>
                 );
             case 3: // enter full name
                 return (
@@ -391,4 +445,12 @@ const CreateAccount: React.FC = () => {
     );
 };
 
-export default CreateAccount;
+const CreateAccountWrapper = () => {
+    return (
+        <Suspense fallback={<p>Loading...</p>}>
+            <CreateAccount />
+        </Suspense>
+    );
+};
+
+export default CreateAccountWrapper;
