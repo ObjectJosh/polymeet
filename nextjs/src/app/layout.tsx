@@ -21,10 +21,10 @@ export default function RootLayout({
     return (
         <html lang='en' className='dark'>
             <KindeProvider
-                clientId='6bc13eb11a624633b2c640ad80ec5244'
-                domain='https://polymeet.kinde.com'
-                logoutUri='http://localhost:3000'
-                redirectUri='http://localhost:3000/chat'
+                clientId={process.env.KINDE_CLIENT_ID}
+                domain={process.env.KINDE_ISSUER_URL}
+                logoutUri={process.env.KINDE_POST_LOGOUT_REDIRECT_URI}
+                redirectUri={process.env.KINDE_POST_LOGIN_REDIRECT_URI}
             >
                 <body className={inter.className}>
                     {children}
