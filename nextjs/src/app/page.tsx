@@ -1,13 +1,8 @@
-'use client';
 import React from 'react';
 import { Box, Button, Typography, Link } from '@mui/material';
 import styles from './welcomePage.module.css';
-// import { RegisterLink, LoginLink } from '@kinde-oss/kinde-auth-nextjs/components';
-import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
-import { LoginLink } from '@kinde-oss/kinde-auth-nextjs/components';
 
 const WelcomePage: React.FC = () => {
-    const { login, register } = useKindeAuth();
     return (
         <Box
             sx={{
@@ -35,7 +30,6 @@ const WelcomePage: React.FC = () => {
                     mt: 10,
                 }}
                 href='/create-account'
-                // onClick={register}
             >
                 Get Started →
             </Button>
