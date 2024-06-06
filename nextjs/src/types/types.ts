@@ -45,3 +45,8 @@ export type App = {
 export type FormError = Omit<UserForm, ''>;
 
 export type ApiWithIdParam = { params: { id: string } };
+
+export type IError = {
+    success: boolean,
+    message: string
+}
