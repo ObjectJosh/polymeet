@@ -159,37 +159,48 @@ const CreateAccount: React.FC = () => {
     }, [searchParams]);
 
     const handleNext = async () => {
-        console.log('Step:', step); // Log current step
+        console.log('Step:', step);
         if (step < totalSteps) {
             setStep(step + 1);
-            return; // Early return if step is less than totalSteps
+            return;
         }
 
+        const fullNameParts = fullName.split(' ');
+        const firstName = fullNameParts[0];
+        const lastName = fullNameParts.slice(1).join(' ');
+
+        // Basic validation
+        if (!email || !firstName || !lastName) {
+            toast({
+                title: 'Error: Missing required fields',
+                description: 'Email, first name, and last name are required.',
+            });
+            return;
+        }
+
+        const newUser = {
+            email,
+            firstName,
+            lastName,
+            major,
+            year,
+            hobbies: selectedTags.filter((tag) => tags.Hobbies.includes(tag)),
+            classes: selectedTags.filter((tag) => tags.Classes.includes(tag)),
+            clubs: selectedTags.filter((tag) => tags.Clubs.includes(tag)),
+        };
+
+        console.log('Sending user data to API:', newUser);
+
         try {
-            const fullNameParts = fullName.split(' ');
-            const firstName = fullNameParts[0];
-            const lastName = fullNameParts.slice(1).join(' ');
-
-            const newUser = {
-                email,
-                firstName,
-                lastName,
-                major,
-                year,
-                hobbies: selectedTags.filter((tag) => tags.Hobbies.includes(tag)),
-                classes: selectedTags.filter((tag) => tags.Classes.includes(tag)),
-                clubs: selectedTags.filter((tag) => tags.Clubs.includes(tag)),
-            };
-
-            console.log('Sending user data to API:', newUser);
-            await axios.post('/api/users', newUser);
-            console.log('User created successfully, redirecting...');
+            const response = await axios.post('/api/users', newUser);
+            console.log('User created successfully:', response.data);
             window.location.href = '/chat';
-        } catch (error: any) {
-            console.error('Error creating user account:', error.message);
+        } catch (error) {
+            console.error('Error creating user account:', error);
+            console.error('Server response:', error.response?.data);
             toast({
                 title: 'Error: Unable to create account',
-                description: error.message,
+                description: error.response?.data?.error || error.message,
             });
         }
     };
