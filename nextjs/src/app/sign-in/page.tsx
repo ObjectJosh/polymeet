@@ -108,7 +108,7 @@ const SignIn: React.FC = () => {
                 const response = await axios.get(`/api/users/${email}`);
                 const user = response.data;
 
-                if (user.banned) {
+                if (user.banned || user.numReports >= 3) {
                     window.location.href = '/banned';
                 } else {
                     window.location.href = '/chat';
