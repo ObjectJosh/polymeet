@@ -14,6 +14,7 @@ export interface User extends mongoose.Document {
     blockedUserIds?: string[];
     banned: boolean;
     numReports: Number;
+    appeal: string;
     createDate: Date;
     lastLoginDate?: Date;
 }
@@ -67,6 +68,10 @@ const UserSchema = new mongoose.Schema<User>({
     numReports: {
         type: Number,
         default: 0, // Default value for numReports
+    },
+    appeal: {
+        type: String,
+        maxlength: [2000, 'Appeal cannot be more than 2,000 characters'],
     },
     createDate: {
         type: Date,
