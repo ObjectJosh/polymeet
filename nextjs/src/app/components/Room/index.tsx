@@ -21,20 +21,18 @@ const servers = {
 
 export default function Room() {
     const server = 'https://polymeet-7137e04975b4.herokuapp.com/';
-    const [socket, setSocket] = useState(io(server));
-    const partnerRef = useRef(null);
+    // const [socket, setSocket] = useState(io(server));
+    // const partnerRef = useRef(null);
 
-    const [userId, setUserId] = useState<String>(v4());
-    const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
-    const [videoClicked, setVideoClicked] = useState<Boolean>(false);
-
+    // const [userId, setUserId] = useState<String>(v4());
+    // const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
     const [localStream, setLocalStream] = useState<MediaStream | null>(null);
     const localVideoRef = useRef<HTMLVideoElement>(null);
     const setLocalVideoRef = async (mediaStream: MediaStream | null) => {
-        const newLocalVideo = localVideoRef.current;
-        if (newLocalVideo) {
-            localVideoRef.srcObject = mediaStream;
-            localVideoRef.controls = false;
+        const vid = localVideoRef.current;
+        if (vid) {
+            vid.srcObject = mediaStream;
+            vid.controls = false;
         }
     };
 
@@ -46,7 +44,7 @@ export default function Room() {
     const localVideoHandler = async () => {
         getLocalStream(videoConfig.video, videoConfig.audio).then((stream) => {
             console.log('Stream:', stream);
-            setLocalStream(stream);
+            setLocalVideoRef(stream);
         });
     };
 
@@ -55,20 +53,12 @@ export default function Room() {
     }
 
     useEffect(() => {
-        //ref.current.srcObject = localStream;
-        if (!localVideoRef.current) return;
-        const v: any = localVideoRef.current;
-        v.srcObject = localStream;
-        v.play();
-    }, [localStream]);
-
-    useEffect(() => {
         console.log('Video state:', videoConfig.video);
         console.log('Audio state:', videoConfig.audio);
         if (videoConfig.video || videoConfig.audio) {
             localVideoHandler();
         } else {
-            setLocalStream(null);
+            setLocalVideoRef(null);
         }
     }, [videoConfig.video, videoConfig.audio]);
 
@@ -109,7 +99,7 @@ export default function Room() {
                 }}
             >
                 <p style={{ position: 'absolute', left: 20, top: 20 }}>Them</p>
-                <video
+                {/* <video
                     autoPlay={true}
                     muted={true}
                     playsInline
@@ -119,7 +109,7 @@ export default function Room() {
                         borderRadius: '10px',
                         objectFit: 'cover',
                     }}
-                ></video>
+                ></video> */}
             </div>
             <div
                 style={{
