@@ -9,6 +9,7 @@ import { FaCog } from 'react-icons/fa';
 import { FaArrowRight } from 'react-icons/fa';
 import VideoCard from "@/app/components/videocard";
 import LocalVideoCard from "@/app/components/localVideoCard";
+import Room from "@/app/components/Room";
 import { remoteStream } from "@/app/webrtc";
 
 import user from './user.png';
@@ -58,8 +59,9 @@ export default function Home() {
                     <FaCog size={25} color='white' />
                 </a>
             </nav>
+            <Room/>
 
-            <div style={{ display: 'flex', marginTop: '20px' }}>
+            {/* <div style={{ display: 'flex', marginTop: '20px' }}>
                 <div style={{ flex: 1 }}>
                     <VideoCard />
                     <LocalVideoCard />
@@ -219,7 +221,7 @@ export default function Home() {
                         </button>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {isModalOpen && !isReportSubmitted && (
                 <div
