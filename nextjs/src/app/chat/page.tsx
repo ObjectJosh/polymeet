@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { FaFlag } from 'react-icons/fa6';
@@ -12,6 +12,29 @@ import user from '../user.png';
 export default function Home() {
     const [isModalOpen, setModalOpen] = useState(false);
     const [isReportSubmitted, setReportSubmitted] = useState(false);
+    const [userData, setUserData] = useState(null);
+
+    // TODO: Change to get user matched with (right now gets info for user logged in)
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const email = localStorage.getItem('userEmail');
+            if (email) {
+                try {
+                    const response = await fetch(`/api/users/${email}`);
+                    const data = await response.json();
+                    if (data.success) {
+                        setUserData(data.data);
+                    } else {
+                        console.error('Failed to fetch user data:', data.error);
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                }
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
     const handleFlagClick = () => {
         setModalOpen(true);
@@ -24,7 +47,6 @@ export default function Home() {
 
     const handleSubmit = (event: { preventDefault: () => void }) => {
         event.preventDefault();
-        // Handle the submit logic here
         setReportSubmitted(true);
     };
 
@@ -72,7 +94,9 @@ export default function Home() {
                             position: 'relative',
                         }}
                     >
-                        <p style={{ position: 'absolute', left: 10, top: 10 }}>Lacy Smith</p>
+                        <p style={{ position: 'absolute', left: 10, top: 10 }}>
+                            {userData ? `${userData.firstName} ${userData.lastName}` : 'Loading...'}
+                        </p>
                     </div>
                     <div
                         style={{
@@ -133,11 +157,14 @@ export default function Home() {
                                     borderRadius: 20,
                                 }}
                             >
-                                Chatting With:&nbsp;<span style={{ color: 'white' }}>Lacy Smith</span>
+                                Chatting With:&nbsp;
+                                <span style={{ color: 'white' }}>
+                                    {userData ? `${userData.firstName} ${userData.lastName}` : 'Loading...'}
+                                </span>
                             </strong>
                         </div>
-                        <p>Major: Computer Science</p>
-                        <p>Year: Sophomore, C/O 2026</p>
+                        <p>Major: {userData ? userData.major : 'Loading...'}</p>
+                        <p>Year: {userData ? userData.year : 'Loading...'}</p>
                         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
                             <p>Tags:</p>
                             <div
@@ -149,19 +176,21 @@ export default function Home() {
                                     width: '100%',
                                 }}
                             >
-                                {['Music', 'Climbing', 'CSC 357'].map((tag) => (
-                                    <div
-                                        key={tag}
-                                        style={{
-                                            backgroundColor: '#FFD700',
-                                            padding: '10px 30px',
-                                            borderRadius: '10px',
-                                            color: 'black',
-                                        }}
-                                    >
-                                        {tag}
-                                    </div>
-                                ))}
+                                {userData
+                                    ? [...userData.hobbies, ...userData.classes, ...userData.clubs].map((tag) => (
+                                          <div
+                                              key={tag}
+                                              style={{
+                                                  backgroundColor: '#FFD700',
+                                                  padding: '10px 30px',
+                                                  borderRadius: '10px',
+                                                  color: 'black',
+                                              }}
+                                          >
+                                              {tag}
+                                          </div>
+                                      ))
+                                    : 'Loading...'}
                             </div>
                         </div>
                     </div>
