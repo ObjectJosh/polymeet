@@ -1,14 +1,51 @@
 'use client';
+import React, { useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
-import { Typography, IconButton, Box } from '@mui/material';
+import { Typography, IconButton, Box, TextField, MenuItem, Button } from '@mui/material';
 import { Edit as EditIcon } from '@mui/icons-material';
 import user from '../user.png';
 import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
+import majorsData from './majors.json';
 
 export default function Settings() {
     const { logout } = useKindeAuth();
-    const Header = ({ text }: { text: string }) => (
+    const [editMode, setEditMode] = useState({
+        name: false,
+        email: false,
+        year: false,
+        major: false,
+        tags: false,
+    });
+    const [name, setName] = useState('Firstname LastName');
+    const [email, setEmail] = useState('someone@calpoly.edu');
+    const [year, setYear] = useState('Second');
+    const [major, setMajor] = useState('Computer Science');
+
+    const handleSave = (field, value) => {
+        switch (field) {
+            case 'name':
+                setName(value);
+                break;
+            case 'email':
+                setEmail(value);
+                break;
+            case 'year':
+                setYear(value);
+                break;
+            case 'major':
+                setMajor(value);
+                break;
+            default:
+                break;
+        }
+        setEditMode((prevEditMode) => ({
+            ...prevEditMode,
+            [field]: false,
+        }));
+    };
+
+    const Header = ({ text }) => (
         <Typography
             variant='h1'
             sx={{
@@ -26,21 +63,128 @@ export default function Settings() {
         </Typography>
     );
 
-    const Field = ({ label, value }: { label: string; value: string }) => (
-        <Box sx={{ marginBottom: '20px' }}>
-            <Typography variant='h6' sx={{ color: '#BFCAD8' }}>
-                {label}
-            </Typography>
-            <Typography variant='body1' sx={{ display: 'flex', alignItems: 'center', color: '#BFCAD8' }}>
-                {value}
-                <IconButton sx={{ marginLeft: '10px' }}>
-                    <EditIcon sx={{ color: '#BFCAD8' }} />
-                </IconButton>
-            </Typography>
-        </Box>
-    );
+    const Field = ({
+        label,
+        value,
+        onChange,
+        type = 'text',
+        select = false,
+        options = [],
+        editMode,
+        toggleEditMode,
+        field,
+        handleSave,
+    }) => {
+        const [localValue, setLocalValue] = useState(value);
 
-    const Tag = ({ label }: { label: string }) => (
+        const handleInputChange = (event) => {
+            setLocalValue(event.target.value);
+        };
+
+        const saveChanges = () => {
+            handleSave(field, localValue);
+            console.log(field, localValue);
+        };
+
+        return (
+            <Box sx={{ marginBottom: '20px' }}>
+                <Typography variant='h6' sx={{ color: '#BFCAD8' }}>
+                    {label}
+                </Typography>
+                {editMode ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        {select ? (
+                            <TextField
+                                select
+                                value={localValue}
+                                onChange={handleInputChange}
+                                variant='outlined'
+                                fullWidth
+                                sx={{
+                                    width: '70%',
+                                    marginBottom: '10px',
+                                    backgroundColor: '#E2E8F0',
+                                    borderRadius: '8px',
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: '#334155',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: '#006155',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: '#006155',
+                                        },
+                                    },
+                                    input: {
+                                        color: '#1E293B',
+                                    },
+                                    label: {
+                                        color: '#64748B',
+                                    },
+                                }}
+                            >
+                                {options.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        ) : (
+                            <TextField
+                                value={localValue}
+                                onChange={handleInputChange}
+                                variant='outlined'
+                                fullWidth
+                                autoFocus
+                                sx={{
+                                    width: '70%',
+                                    marginBottom: '10px',
+                                    backgroundColor: '#E2E8F0',
+                                    borderRadius: '8px',
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: '#334155',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: '#006155',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: '#006155',
+                                        },
+                                    },
+                                    input: {
+                                        color: '#1E293B',
+                                    },
+                                    label: {
+                                        color: '#64748B',
+                                    },
+                                }}
+                            />
+                        )}
+                        <Button
+                            onClick={saveChanges}
+                            variant='contained'
+                            sx={{ marginLeft: '10px', backgroundColor: 'green', color: 'white' }}
+                        >
+                            Save
+                        </Button>
+                    </Box>
+                ) : (
+                    <Typography variant='body1' sx={{ display: 'flex', alignItems: 'center', color: '#BFCAD8' }}>
+                        {value}
+                        {label !== 'Email' && (
+                            <IconButton sx={{ marginLeft: '10px' }} onClick={toggleEditMode}>
+                                <EditIcon sx={{ color: '#BFCAD8' }} />
+                            </IconButton>
+                        )}
+                    </Typography>
+                )}
+            </Box>
+        );
+    };
+
+    const Tag = ({ label }) => (
         <Box
             sx={{
                 backgroundColor: '#F9AD16',
@@ -53,6 +197,13 @@ export default function Settings() {
             {label}
         </Box>
     );
+
+    const toggleEditMode = (field) => {
+        setEditMode((prevEditMode) => ({
+            ...prevEditMode,
+            [field]: !prevEditMode[field],
+        }));
+    };
 
     return (
         <div
@@ -101,10 +252,47 @@ export default function Settings() {
 
             <Header text='Account Settings' />
             <Box sx={{ padding: '0 400px', marginTop: '3%' }}>
-                <Field label='Name' value='Firstname LastName' />
-                <Field label='Email' value='someone@calpoly.edu' />
-                <Field label='Year' value='Second' />
-                <Field label='Major' value='Computer Science' />
+                <Field
+                    label='Name'
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    editMode={editMode.name}
+                    toggleEditMode={() => toggleEditMode('name')}
+                    field='name'
+                    handleSave={handleSave}
+                />
+                <Field
+                    label='Email'
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    editMode={editMode.email}
+                    toggleEditMode={() => toggleEditMode('email')}
+                    field='email'
+                    handleSave={handleSave}
+                />
+                <Field
+                    label='Year'
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                    select
+                    options={['First', 'Second', 'Third', 'Fourth', 'Fifth+']}
+                    editMode={editMode.year}
+                    toggleEditMode={() => toggleEditMode('year')}
+                    field='year'
+                    handleSave={handleSave}
+                />
+                <Field
+                    label='Major'
+                    value={major}
+                    onChange={(e) => setMajor(e.target.value)}
+                    select
+                    options={majorsData.majors}
+                    editMode={editMode.major}
+                    toggleEditMode={() => toggleEditMode('major')}
+                    field='major'
+                    handleSave={handleSave}
+                />
+
                 <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
                     <Typography variant='h6' sx={{ color: '#BFCAD8', marginRight: '10px' }}>
                         My Tags
@@ -113,7 +301,7 @@ export default function Settings() {
                         <Tag label='Hiking' />
                         <Tag label='CSC 357' />
                         <Tag label='CS+AI' />
-                        <IconButton sx={{ marginLeft: '10px' }}>
+                        <IconButton sx={{ marginLeft: '10px' }} href='/tags'>
                             <EditIcon sx={{ color: '#BFCAD8' }} />
                         </IconButton>
                     </Box>
