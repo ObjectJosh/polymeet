@@ -14,14 +14,17 @@
         "@emotion/styled": "^11.11.5",
         "@kinde-oss/kinde-auth-nextjs": "^2.2.6",
         "@mui/icons-material": "^5.15.18",
-        "@mui/material": "^5.15.18",
+        "@mui/material": "^5.15.19",
         "dotenv": "^16.4.5",
         "firebase": "^10.12.2",
+        "framer-motion": "^11.2.10",
         "next": "14.2.3",
         "react": "^18",
         "react-dom": "^18",
         "react-icons": "^5.2.1",
-        "react-router-dom": "^6.23.1"
+        "react-router-dom": "^6.23.1",
+        "socket.io-client": "^4.7.5",
+        "uuid": "^9.0.1"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "^6.4.5",
