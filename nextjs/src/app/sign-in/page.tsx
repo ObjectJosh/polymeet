@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField, Typography, IconButton, InputAdornment, SxProps, Link } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { LoginLink } from '@kinde-oss/kinde-auth-nextjs/components';
 
 const Header = ({ text }: { text: string }) => (
     <Typography
@@ -95,19 +96,18 @@ const CustomButton = ({ onClick, children }: { onClick: () => void; children: Re
     </Button>
 );
 
-const handleNext = () => {
-    window.location.href = '/';
-};
-
 const SignIn: React.FC = () => {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-
-    const toggleShowPassword = () => {
-        setShowPassword(!showPassword);
+    const handleNext = () => {
+        if (email) {
+            localStorage.setItem('userEmail', email);
+            window.location.href = '/';
+        }
     };
-
+    useEffect(() => {
+        const email = localStorage.getItem('userEmail');
+        console.log('Email from localStorage:', email);
+    }, []);
     return (
         <Box
             sx={{
@@ -135,38 +135,29 @@ const SignIn: React.FC = () => {
                 Email
             </Typography>
             <CustomTextField label='' value={email} onChange={(e) => setEmail(e.target.value)} />
-
-            <Typography
-                sx={{
-                    marginBottom: '0',
-                    marginTop: '5rem',
-                    color: '#BFCAD8',
-                    fontWeight: 'regular',
-                    fontSize: '24px',
-                    letterSpacing: '-0.6%',
-                    paddingRight: '910px',
+            <LoginLink
+                postLoginRedirectURL='/chat'
+                authUrlParams={{
+                    connection_id: process.env.NEXT_PUBLIC_KINDE_CONNECTION_EMAIL_PASSWORDLESS || '',
+                    login_hint: email,
+                    // user_metadata: {
+                    //     first_name: '',
+                    //     last_name: '',
+                    // },
                 }}
             >
-                Password
-            </Typography>
-            <CustomTextField
-                label=''
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                endAdornment={
-                    <InputAdornment position='end'>
-                        <IconButton aria-label='toggle password visibility' onClick={toggleShowPassword} edge='end'>
-                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
-                    </InputAdornment>
-                }
-            />
-
-            <CustomButton onClick={() => email && password && handleNext()}>Log In</CustomButton>
-            <Typography variant='body1' sx={{ mt: 2 }}>
+                <CustomButton onClick={() => email && handleNext()}>Log In</CustomButton>
+            </LoginLink>
+            {/* Commented this out because we're using passwordless */}
+            {/* <Typography variant='body1' sx={{ mt: 2 }}>
                 Forgot your password? Reset it{' '}
                 <Link href='/forgot-password' sx={{ color: '#4285F4' }}>
+                    here
+                </Link>
+            </Typography> */}
+            <Typography variant='body1' sx={{ mt: 2 }}>
+                New user? Sign up{' '}
+                <Link sx={{ color: '#4285F4' }} href='/create-account'>
                     here
                 </Link>
             </Typography>
