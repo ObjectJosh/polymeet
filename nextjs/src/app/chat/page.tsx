@@ -13,28 +13,37 @@ import user from '../user.png';
 export default function Home() {
     const [isModalOpen, setModalOpen] = useState(false);
     const [isReportSubmitted, setReportSubmitted] = useState(false);
+    const [reportReason, setReportReason] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+
     const [userData, setUserData] = useState(null);
 
     // TODO: Change to get user matched with (right now gets info for user logged in)
     useEffect(() => {
-        const fetchUserData = async () => {
-            const email = localStorage.getItem('userEmail');
-            if (email) {
-                try {
-                    const response = await fetch(`/api/users/${email}`);
-                    const data = await response.json();
-                    if (data.success) {
-                        setUserData(data.data);
-                    } else {
-                        console.error('Failed to fetch user data:', data.error);
+        if (typeof window !== 'undefined') {
+            const fetchUserData = async () => {
+                const email = localStorage.getItem('userEmail');
+                if (email) {
+                    try {
+                        const response = await fetch(`/api/users/${email}`);
+                        const data = await response.json();
+                        if (data.success) {
+                            if (data.data.banned) {
+                                window.location.href = '/banned';
+                            } else {
+                                setUserData(data.data);
+                            }
+                        } else {
+                            console.error('Failed to fetch user data:', data.error);
+                        }
+                    } catch (error) {
+                        console.error('Error fetching user data:', error);
                     }
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
                 }
-            }
-        };
+            };
 
-        fetchUserData();
+            fetchUserData();
+        }
     }, []);
 
     const handleFlagClick = () => {
@@ -44,10 +53,17 @@ export default function Home() {
     const handleCloseModal = () => {
         setModalOpen(false);
         setReportSubmitted(false);
+        setReportReason('');
+        setErrorMessage('');
     };
 
     const handleSubmit = (event: { preventDefault: () => void }) => {
         event.preventDefault();
+        // Handle the submit logic here
+        if (!reportReason.trim()) {
+            setErrorMessage('Must provide reason');
+            return;
+        }
         setReportSubmitted(true);
     };
 
@@ -298,35 +314,53 @@ export default function Home() {
                         left: 0,
                         width: '100%',
                         height: '100%',
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        backgroundColor: 'rgba(0,0,0,0.5)',
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
                     }}
                 >
-                    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', width: '400px' }}>
-                        <h2 style={{ color: 'red' }}>Report Lacy Smith?</h2>
-                        <p style={{ color: 'black' }}>By reporting this user, you will not match with them again.</p>
+                    <div
+                        style={{
+                            backgroundColor: 'white',
+                            padding: '20px',
+                            borderRadius: '10px',
+                            maxWidth: '500px',
+                            width: '100%',
+                        }}
+                    >
+                        <h2 style={{ color: '#d32f2f', marginBottom: '10px' }}>Report User</h2>
+                        <p style={{ color: '#333', marginBottom: '20px' }}>
+                            By reporting this user, you will not match with them again.
+                        </p>
                         <form onSubmit={handleSubmit}>
                             <textarea
                                 placeholder='Reason for reporting...'
+                                value={reportReason}
+                                onChange={(e) => setReportReason(e.target.value)}
                                 style={{
                                     width: '100%',
                                     height: '100px',
                                     padding: '10px',
                                     borderRadius: '5px',
                                     border: '1px solid #BFCAD8',
-                                    color: 'black',
+                                    color: '#333',
+                                    marginBottom: '10px',
                                 }}
                             />
+                            {errorMessage && (
+                                <p style={{ color: '#d32f2f', marginTop: '5px', textAlign: 'center' }}>
+                                    {errorMessage}
+                                </p>
+                            )}
                             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
                                 <button
                                     type='button'
                                     onClick={handleCloseModal}
                                     style={{
                                         marginRight: '10px',
-                                        padding: '5px 15px',
-                                        backgroundColor: 'gray',
+                                        padding: '10px 20px',
+                                        backgroundColor: '#9e9e9e',
                                         borderRadius: '5px',
                                         border: 'none',
                                         color: 'white',
@@ -338,8 +372,8 @@ export default function Home() {
                                 <button
                                     type='submit'
                                     style={{
-                                        padding: '5px 15px',
-                                        backgroundColor: 'green',
+                                        padding: '10px 20px',
+                                        backgroundColor: '#388e3c',
                                         borderRadius: '5px',
                                         border: 'none',
                                         color: 'white',
@@ -369,8 +403,10 @@ export default function Home() {
                     }}
                 >
                     <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', width: '400px' }}>
-                        <h2 style={{ color: 'red' }}>We have received your report for Lacy Smith</h2>
-                        <p style={{ color: 'black' }}>You will not match with them again</p>
+                        <h2 style={{ color: '#d32f2f', marginBottom: '10px' }}>
+                            We have received your report for Lacy Smith
+                        </h2>
+                        <p style={{ color: 'black', marginBottom: '10px' }}>You will not match with them again</p>
                         <button
                             onClick={handleCloseModal}
                             style={{
