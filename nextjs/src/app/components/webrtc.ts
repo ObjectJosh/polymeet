@@ -56,6 +56,8 @@ export interface VideoConfig {
 }
 
 export const fetchUserData = async (email: string) => {
+    console.log('Fetching user data:', email);
+    console.log(`"/api/users/${email}"`);
     try {
         const response = await fetch(`/api/users/${email}`);
         const data = await response.json();
