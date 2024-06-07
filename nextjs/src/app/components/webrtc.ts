@@ -54,3 +54,19 @@ export interface VideoConfig {
     video: boolean;
     audio: boolean;
 }
+
+export const fetchUserData = async (email: string) => {
+    try {
+        const response = await fetch(`/api/users/${email}`);
+        const data = await response.json();
+        if (data.success) {
+            const user = data.data;
+            console.log('User data:', user);
+            return user;
+        } else {
+            console.error('User not found:', data.error);
+        }
+    } catch (error) {
+        console.error('Failed to fetch user data:', error);
+    }
+};
