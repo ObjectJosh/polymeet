@@ -4,28 +4,18 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { Box, Typography, TextField, IconButton, Tooltip, Button } from '@mui/material';
 import { Info as InfoIcon } from '@mui/icons-material';
-import Link from 'next/link';
 
 export default function Banned() {
     const [appealText, setAppealText] = useState('');
-    const [userId, setUserId] = useState(null);
+    const [email, setEmail] = useState('');
 
     useEffect(() => {
         const fetchUserData = async () => {
-            // Replace 'userId' with the actual user ID or fetch it from localStorage
-            const userId = localStorage.getItem('userId');
-            if (userId) {
-                try {
-                    const response = await fetch(`/api/user/${userId}`);
-                    const data = await response.json();
-                    if (response.ok) {
-                        setUserId(userId);
-                    } else {
-                        console.error('Failed to fetch user data:', data.error);
-                    }
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                }
+            const email = localStorage.getItem('userEmail');
+            if (email) {
+                setEmail(email);
+            } else {
+                console.error('No email found in localStorage');
             }
         };
 
@@ -39,7 +29,7 @@ export default function Banned() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userId, appealText }),
+                body: JSON.stringify({ email, appealText }),
             });
             if (response.ok) {
                 // Handle success, maybe show a confirmation message
