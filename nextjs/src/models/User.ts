@@ -12,6 +12,7 @@ export interface User extends mongoose.Document {
     classes?: string[];
     clubs?: string[];
     blockedUserIds?: string[];
+    banned: boolean;
     createDate: Date;
     lastLoginDate?: Date;
 }
@@ -57,6 +58,10 @@ const UserSchema = new mongoose.Schema<User>({
     },
     blockedUserIds: {
         type: [String],
+    },
+    banned: {
+        type: Boolean,
+        default: false,
     },
     createDate: {
         type: Date,
