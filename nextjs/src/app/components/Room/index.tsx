@@ -369,9 +369,17 @@ export default function Room() {
                 </button>
             </div>
 
-            <div style={{ width: '100%' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', marginTop: '20px' }}>
-                    <div style={{ flex: 2, marginLeft: '20px', position: 'relative' }}>
+            <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <div
+                    style={{
+                        marginTop: '20px',
+                        flex: '1 1 auto',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        overflow: 'hidden',
+                    }}
+                >
+                    <div style={{ padding: '10px' }}>
                         <div
                             style={{
                                 backgroundColor: '#070D1B',
@@ -487,9 +495,7 @@ export default function Room() {
                         style={{
                             display: 'flex',
                             justifyContent: 'space-between',
-                            bottom: 0,
-                            // position: '',
-                            width: '100%',
+                            padding: '10px',
                         }}
                     >
                         <input
@@ -523,111 +529,105 @@ export default function Room() {
                         </button>
                     </div>
                 </div>
-
-                {isModalOpen && !isReportSubmitted && (
-                    <div
-                        style={{
-                            position: 'fixed',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <div
-                            style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', width: '400px' }}
-                        >
-                            <h2 style={{ color: 'red' }}>Report Lacy Smith?</h2>
-                            <p style={{ color: 'black' }}>
-                                By reporting this user, you will not match with them again.
-                            </p>
-                            <form onSubmit={handleSubmit}>
-                                <textarea
-                                    placeholder='Reason for reporting...'
-                                    style={{
-                                        width: '100%',
-                                        height: '100px',
-                                        padding: '10px',
-                                        borderRadius: '5px',
-                                        border: '1px solid #BFCAD8',
-                                        color: 'black',
-                                    }}
-                                />
-                                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
-                                    <button
-                                        type='button'
-                                        onClick={handleCloseModal}
-                                        style={{
-                                            marginRight: '10px',
-                                            padding: '5px 15px',
-                                            backgroundColor: 'gray',
-                                            borderRadius: '5px',
-                                            border: 'none',
-                                            color: 'white',
-                                            cursor: 'pointer',
-                                        }}
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type='submit'
-                                        style={{
-                                            padding: '5px 15px',
-                                            backgroundColor: 'green',
-                                            borderRadius: '5px',
-                                            border: 'none',
-                                            color: 'white',
-                                            cursor: 'pointer',
-                                        }}
-                                    >
-                                        Submit
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                )}
-
-                {isReportSubmitted && (
-                    <div
-                        style={{
-                            position: 'fixed',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <div
-                            style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', width: '400px' }}
-                        >
-                            <h2 style={{ color: 'red' }}>We have received your report for Lacy Smith</h2>
-                            <p style={{ color: 'black' }}>You will not match with them again</p>
-                            <button
-                                onClick={handleCloseModal}
-                                style={{
-                                    padding: '10px 20px',
-                                    backgroundColor: 'green',
-                                    borderRadius: '5px',
-                                    border: 'none',
-                                    color: 'white',
-                                    cursor: 'pointer',
-                                }}
-                            >
-                                Back to PolyMeet
-                            </button>
-                        </div>
-                    </div>
-                )}
             </div>
+
+            {isModalOpen && !isReportSubmitted && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', width: '400px' }}>
+                        <h2 style={{ color: 'red' }}>Report Lacy Smith?</h2>
+                        <p style={{ color: 'black' }}>By reporting this user, you will not match with them again.</p>
+                        <form onSubmit={handleSubmit}>
+                            <textarea
+                                placeholder='Reason for reporting...'
+                                style={{
+                                    width: '100%',
+                                    height: '100px',
+                                    padding: '10px',
+                                    borderRadius: '5px',
+                                    border: '1px solid #BFCAD8',
+                                    color: 'black',
+                                }}
+                            />
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+                                <button
+                                    type='button'
+                                    onClick={handleCloseModal}
+                                    style={{
+                                        marginRight: '10px',
+                                        padding: '5px 15px',
+                                        backgroundColor: 'gray',
+                                        borderRadius: '5px',
+                                        border: 'none',
+                                        color: 'white',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type='submit'
+                                    style={{
+                                        padding: '5px 15px',
+                                        backgroundColor: 'green',
+                                        borderRadius: '5px',
+                                        border: 'none',
+                                        color: 'white',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {isReportSubmitted && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', width: '400px' }}>
+                        <h2 style={{ color: 'red' }}>We have received your report for Lacy Smith</h2>
+                        <p style={{ color: 'black' }}>You will not match with them again</p>
+                        <button
+                            onClick={handleCloseModal}
+                            style={{
+                                padding: '10px 20px',
+                                backgroundColor: 'green',
+                                borderRadius: '5px',
+                                border: 'none',
+                                color: 'white',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Back to PolyMeet
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
