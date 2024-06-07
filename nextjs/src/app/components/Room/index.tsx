@@ -28,9 +28,9 @@ export default function Room() {
     const textRef = useRef<HTMLInputElement>(null);
 
     const [localUser, setLocalUser] = useState({
-        email: 'm@calpoly.edu',
-        firstName: 'Mickey',
-        lastName: 'Mouse',
+        email: '',
+        firstName: '',
+        lastName: '',
     });
     const [remoteUser, setRemoteUser] = useState({
         email: 'mss@calpoly.edu',
@@ -55,6 +55,34 @@ export default function Room() {
     });
 
     const hasRunRef = useRef(false);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const email = localStorage.getItem('userEmail');
+                console.log('Email from localStorage:', email);
+
+                if (!email) {
+                    console.error('No email found in localStorage');
+                    return;
+                }
+
+                const response = await fetch(`/api/users/${email}`);
+                const data = await response.json();
+                if (data.success) {
+                    const user = data.data;
+                    setLocalUser(user);
+                    console.log('User data:', user);
+                } else {
+                    console.error('User not found:', data.error);
+                }
+            } catch (error) {
+                console.error('Failed to fetch user data:', error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
     useEffect(() => {
         if (!message) return;

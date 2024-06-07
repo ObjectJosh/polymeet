@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { FaFlag } from 'react-icons/fa6';
 import { FaCog } from 'react-icons/fa';
 import { FaArrowRight } from 'react-icons/fa';
+import Room from '../components/Room';  
 
 import user from '../user.png';
 
@@ -78,7 +79,9 @@ export default function Home() {
                 </a>
             </nav>
 
-            <div style={{ display: 'flex', marginTop: '20px' }}>
+            <Room />
+
+            {/* <div style={{ display: 'flex', marginTop: '20px' }}>
                 <div style={{ flex: 1 }}>
                     <div
                         style={{
@@ -373,7 +376,7 @@ export default function Home() {
                         </button>
                     </div>
                 </div>
-            )}
+            )} */}
         </div>
     );
 }

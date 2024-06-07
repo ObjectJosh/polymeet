@@ -1,7 +1,7 @@
 import React, { MutableRefObject } from 'react';
 import { Videocam, VideocamOff, Mic, MicOff } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
-import { VideoConfig } from '../webrtc';
+import { VideoConfig } from './webrtc';
 
 interface VideoConfigProps {
     videoConfig: VideoConfig;
