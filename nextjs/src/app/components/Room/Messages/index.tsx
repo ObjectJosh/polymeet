@@ -100,3 +100,7 @@ export default function Messages({socket, id, messageBoxOn}:MessageProp){
         </motion.div>
     )
 }
+
+function useLanguage(): { text: any; } {
+    throw new Error('Function not implemented.');
+}
