@@ -1,6 +1,5 @@
-
 import { initializeApp } from 'firebase/app';
-import  { getFirestore }from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
 
 export const ENV = {
     FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -49,4 +48,9 @@ export async function getLocalStream(video: boolean, audio: boolean): Promise<Me
 export async function getRemoteStream(): Promise<MediaStream> {
     remoteStream = new MediaStream();
     return remoteStream; // Add this line to fix the error
+}
+
+export interface VideoConfig {
+    video: boolean;
+    audio: boolean;
 }
