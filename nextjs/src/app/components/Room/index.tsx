@@ -3,14 +3,10 @@
 import { VideoConfig } from '../webrtc';
 import { useState, useRef, useEffect } from 'react';
 import { io } from 'socket.io-client';
-import { v4 } from 'uuid';
 import { Videocam, VideocamOff, Mic, MicOff } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { FaFlag } from 'react-icons/fa6';
 import { FaArrowRight } from 'react-icons/fa';
-
-import { User } from '@/models/User';
-import { text } from 'stream/consumers';
 
 interface Message {
     email: string;
@@ -41,22 +37,12 @@ export default function Room() {
         firstName: 'Minnie',
         lastName: 'Mouse',
     });
-    const [messages, setMessages] = useState<Message[] | null>([
-        {
-            email: 'm@calpoly.edu',
-            message: 'Hi!',
-        },
-        {
-            email: 'mss@calpoly.edu',
-            message: 'Nice to meet you!',
-        },
-    ]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [message, setMessage] = useState<Message | null>(null);
     const [userData, setUserData] = useState(null);
     const server = 'https://polymeet-7137e04975b4.herokuapp.com/';
     const [socket, setSocket] = useState(io(server));
 
-    const [userId, setUserId] = useState<String>(v4());
     const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
     const [localStream, setLocalStream] = useState<MediaStream | null>(null);
 
@@ -89,12 +75,9 @@ export default function Room() {
     }
 
     useEffect(() => {
-        if (hasRunRef.current) {
-            return;
-        }
-        setLocalStream(new MediaStream());
-        hasRunRef.current = true;
-        initialize();
+        socket.on('new_message', (new_msg) => {
+            setMessage(new_msg);
+        });
 
         function keyDownHandler(e: any) {
             if (e.key === 'Enter') {
@@ -103,6 +86,13 @@ export default function Room() {
         }
         document.addEventListener('keydown', keyDownHandler);
 
+        if (hasRunRef.current) {
+            return;
+        }
+        hasRunRef.current = true;
+
+        setLocalStream(new MediaStream());
+        initialize();
         return () => {
             document.removeEventListener('keydown', keyDownHandler);
         };
@@ -149,16 +139,18 @@ export default function Room() {
 
         // Signals to the server that a new user just joined the call
         console.log('Joining room...');
-        socket.emit('joinRoom', { userId });
+        socket.emit('joinRoom', { userId: localUser.email });
 
         socket.on('waiting', () => {
             console.log('Waiting 20 seconds for someone to join...');
             joinTimeout = setTimeout(() => {
                 console.log('No one joined, searching for a room...');
-                socket.emit('joinRoom', { userId });
+                socket.emit('joinRoom', { userId: localUser.email });
             }, 20000000);
 
-            socket.on('user_joined', async () => {
+            socket.on('user_joined', async (userId) => {
+                // TODO: Set remote user by querying the database for the user with the given userId
+                setRemoteUser(userId);
                 console.log('Someone joined! timeout canceled.');
                 clearTimeout(joinTimeout);
 
@@ -196,7 +188,7 @@ export default function Room() {
 
         socket.on('reset', () => {
             setRemoteStream(null);
-            socket.emit('joinRoom', { userId });
+            socket.emit('joinRoom', { userId: localUser.email });
             offerSent = false;
             answerSent = false;
         });
