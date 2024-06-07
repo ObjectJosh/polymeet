@@ -36,10 +36,14 @@ export default function Room() {
         email: 'mss@calpoly.edu',
         firstName: 'Minnie',
         lastName: 'Mouse',
+        major: 'Computer Science',
+        year: 'Senior',
+        hobbies: ['Climbing'],
+        classes: ['CSC 123'],
+        clubs: ['CS+AI'],
     });
     const [messages, setMessages] = useState<Message[]>([]);
     const [message, setMessage] = useState<Message | null>(null);
-    const [userData, setUserData] = useState(null);
     const server = 'https://polymeet-7137e04975b4.herokuapp.com/';
     const [socket, setSocket] = useState(io(server));
 
@@ -53,6 +57,9 @@ export default function Room() {
         video: true,
         audio: true,
     });
+
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [isReportSubmitted, setReportSubmitted] = useState(false);
 
     const hasRunRef = useRef(false);
 
@@ -281,6 +288,7 @@ export default function Room() {
     const handleCloseModal = () => {
         setModalOpen(false);
         setReportSubmitted(false);
+        window.location.reload(); 
     };
 
     const handleSubmit = (event: { preventDefault: () => void }) => {
@@ -289,7 +297,13 @@ export default function Room() {
     };
 
     return (
-        <div id='meet'>
+        <div
+            id='meet'
+            style={{
+                display: 'flex',
+                flexDirection: 'row',
+            }}
+        >
             <div
                 style={{
                     padding: '10px',
@@ -317,7 +331,7 @@ export default function Room() {
                     }}
                 >
                     <p style={{ position: 'absolute', left: 20, top: 20 }}>
-                        {userData ? `${userData.firstName} ${userData.lastName}` : 'Loading...'}
+                        {remoteUser ? `${remoteUser.firstName} ${remoteUser.lastName}` : 'Loading...'}
                     </p>
                     <video
                         ref={partnerRef}
@@ -361,162 +375,284 @@ export default function Room() {
                     ></video>
                     <div style={{ position: 'absolute', bottom: 10, left: 10, display: 'flex', gap: '10px' }}>
                         <IconButton onClick={toggleStream} color='primary'>
-                            {videoConfig.video ? <VideocamOff /> : <Videocam />}
+                            {videoConfig.video ? <Videocam /> : <VideocamOff />}
                         </IconButton>
                         <IconButton onClick={toggleAudio} color='primary'>
-                            {videoConfig.audio ? <MicOff /> : <Mic />}
+                            {videoConfig.audio ? <Mic /> : <MicOff />}
                         </IconButton>
                     </div>
                 </div>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', marginTop: '20px' }}>
-                <div style={{ flex: 2, marginLeft: '20px', position: 'relative' }}>
-                    <div
-                        style={{
-                            backgroundColor: '#070D1B',
-                            padding: '10px',
-                            borderRadius: '10px',
-                            paddingBottom: 15,
-                            border: '1px solid #BFCAD8',
-                        }}
-                    >
-                        <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
-                            <FaFlag
-                                size={25}
-                                color='red'
-                                style={{ position: 'absolute', top: 10, right: 10, cursor: 'pointer' }}
-                                onClick={handleFlagClick}
-                            />
-                            <strong
-                                style={{
-                                    justifyContent: 'center',
-                                    display: 'flex',
-                                    backgroundColor: '#006155',
-                                    padding: 10,
-                                    color: 'black',
-                                    width: '20rem',
-                                    borderRadius: 20,
-                                }}
-                            >
-                                Chatting With:&nbsp;
-                                <span style={{ color: 'white' }}>
-                                    {userData ? `${userData.firstName} ${userData.lastName}` : 'Loading...'}
-                                </span>
-                            </strong>
-                        </div>
-                        <p>Major: {userData ? userData.major : 'Loading...'}</p>
-                        <p>Year: {userData ? userData.year : 'Loading...'}</p>
-                        <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-                            <p>Tags:</p>
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    gap: '5px',
-                                    marginLeft: 5,
-                                    justifyContent: 'space-around',
-                                    width: '100%',
-                                }}
-                            >
-                                {userData
-                                    ? [...userData.hobbies, ...userData.classes, ...userData.clubs].map((tag) => (
-                                          <div
-                                              key={tag}
-                                              style={{
-                                                  backgroundColor: '#FFD700',
-                                                  padding: '10px 30px',
-                                                  borderRadius: '10px',
-                                                  color: 'black',
-                                              }}
-                                          >
-                                              {tag}
-                                          </div>
-                                      ))
-                                    : 'Loading...'}
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        style={{
-                            marginTop: '20px',
-                            padding: '10px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '10px',
-                        }}
-                    >
-                        {messages.map((msg, index) =>
-                            msg.email === localUser.email ? (
-                                <div
-                                    key={index}
-                                    style={{
-                                        background: '#CBC3E3',
-                                        padding: '10px 20px',
-                                        borderRadius: '15px',
-                                        maxWidth: '80%',
-                                        alignSelf: 'flex-end',
-                                    }}
-                                >
-                                    <p>You: {msg.message}</p>
-                                </div>
-                            ) : (
-                                <div
-                                    key={index}
-                                    style={{
-                                        background: 'lightblue',
-                                        padding: '10px 20px',
-                                        borderRadius: '15px',
-                                        maxWidth: '80%',
-                                        alignSelf: 'flex-start',
-                                    }}
-                                >
-                                    <p>
-                                        {remoteUser.firstName} {remoteUser.lastName}: {msg.message}
-                                    </p>
-                                </div>
-                            )
-                        )}
-                    </div>
-                </div>
-                <div
+                <button
                     style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        bottom: 0,
-                        position: '',
-                        width: '100%',
+                        padding: '5px 50px',
+                        fontSize: '16px',
+                        cursor: 'pointer',
+                        backgroundColor: '#0D99FF',
+                        borderRadius: 20,
+                    }}
+                    onClick={() => {
+                        window.location.reload();
                     }}
                 >
-                    <input
-                        type='text'
-                        placeholder='Send a message...'
-                        ref={textRef}
+                    Skip
+                </button>
+            </div>
+
+            <div style={{ width: '100%' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', marginTop: '20px' }}>
+                    <div style={{ flex: 2, marginLeft: '20px', position: 'relative' }}>
+                        <div
+                            style={{
+                                backgroundColor: '#070D1B',
+                                padding: '10px',
+                                borderRadius: '10px',
+                                paddingBottom: 15,
+                                border: '1px solid #BFCAD8',
+                            }}
+                        >
+                            <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
+                                <FaFlag
+                                    size={25}
+                                    color='red'
+                                    style={{ position: 'absolute', top: 10, right: 10, cursor: 'pointer' }}
+                                    onClick={handleFlagClick}
+                                />
+                                <strong
+                                    style={{
+                                        justifyContent: 'center',
+                                        display: 'flex',
+                                        backgroundColor: '#006155',
+                                        padding: 10,
+                                        color: 'black',
+                                        width: '20rem',
+                                        borderRadius: 20,
+                                    }}
+                                >
+                                    Chatting With:&nbsp;
+                                    <span style={{ color: 'white' }}>
+                                        {remoteUser ? `${remoteUser.firstName} ${remoteUser.lastName}` : 'Loading...'}
+                                    </span>
+                                </strong>
+                            </div>
+                            <p>Major: {remoteUser ? remoteUser.major : 'Loading...'}</p>
+                            <p>Year: {remoteUser ? remoteUser.year : 'Loading...'}</p>
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                <p>Tags:</p>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        gap: '5px',
+                                        marginLeft: 5,
+                                        justifyContent: 'space-around',
+                                        width: '100%',
+                                    }}
+                                >
+                                    {remoteUser
+                                        ? [...remoteUser.hobbies, ...remoteUser.classes, ...remoteUser.clubs].map(
+                                              (tag) => (
+                                                  <div
+                                                      key={tag}
+                                                      style={{
+                                                          backgroundColor: '#FFD700',
+                                                          padding: '10px 30px',
+                                                          borderRadius: '10px',
+                                                          color: 'black',
+                                                      }}
+                                                  >
+                                                      {tag}
+                                                  </div>
+                                              )
+                                          )
+                                        : 'Loading...'}
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            style={{
+                                marginTop: '20px',
+                                padding: '10px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '10px',
+                            }}
+                        >
+                            {messages.map((msg, index) =>
+                                msg.email === localUser.email ? (
+                                    <div
+                                        key={index}
+                                        style={{
+                                            background: '#CBC3E3',
+                                            padding: '10px 20px',
+                                            borderRadius: '15px',
+                                            maxWidth: '80%',
+                                            alignSelf: 'flex-end',
+                                        }}
+                                    >
+                                        <p>You: {msg.message}</p>
+                                    </div>
+                                ) : (
+                                    <div
+                                        key={index}
+                                        style={{
+                                            background: 'lightblue',
+                                            padding: '10px 20px',
+                                            borderRadius: '15px',
+                                            maxWidth: '80%',
+                                            alignSelf: 'flex-start',
+                                        }}
+                                    >
+                                        <p>
+                                            {remoteUser.firstName} {remoteUser.lastName}: {msg.message}
+                                        </p>
+                                    </div>
+                                )
+                            )}
+                        </div>
+                    </div>
+                    <div
                         style={{
-                            flexGrow: 1,
-                            borderRadius: '20px 0 0 20px',
-                            padding: '10px 20px',
-                            border: '1px solid #BFCAD8',
-                            borderRight: 'none',
-                            backgroundColor: '#070D1B',
-                            color: 'white',
-                        }}
-                    />
-                    <button
-                        onClick={sendMessage}
-                        style={{
-                            padding: '10px 20px',
-                            fontSize: '16px',
-                            borderRadius: '0 20px 20px 0',
-                            border: '2px solid #BFCAD8',
-                            borderLeft: 'none',
-                            backgroundColor: '#BFCAD8',
-                            color: 'black',
-                            cursor: 'pointer',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            bottom: 0,
+                            // position: '',
+                            width: '100%',
                         }}
                     >
-                        <FaArrowRight />
-                    </button>
+                        <input
+                            type='text'
+                            placeholder='Send a message...'
+                            ref={textRef}
+                            style={{
+                                flexGrow: 1,
+                                borderRadius: '20px 0 0 20px',
+                                padding: '10px 20px',
+                                border: '1px solid #BFCAD8',
+                                borderRight: 'none',
+                                backgroundColor: '#070D1B',
+                                color: 'white',
+                            }}
+                        />
+                        <button
+                            onClick={sendMessage}
+                            style={{
+                                padding: '10px 20px',
+                                fontSize: '16px',
+                                borderRadius: '0 20px 20px 0',
+                                border: '2px solid #BFCAD8',
+                                borderLeft: 'none',
+                                backgroundColor: '#BFCAD8',
+                                color: 'black',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            <FaArrowRight />
+                        </button>
+                    </div>
                 </div>
+
+                {isModalOpen && !isReportSubmitted && (
+                    <div
+                        style={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <div
+                            style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', width: '400px' }}
+                        >
+                            <h2 style={{ color: 'red' }}>Report Lacy Smith?</h2>
+                            <p style={{ color: 'black' }}>
+                                By reporting this user, you will not match with them again.
+                            </p>
+                            <form onSubmit={handleSubmit}>
+                                <textarea
+                                    placeholder='Reason for reporting...'
+                                    style={{
+                                        width: '100%',
+                                        height: '100px',
+                                        padding: '10px',
+                                        borderRadius: '5px',
+                                        border: '1px solid #BFCAD8',
+                                        color: 'black',
+                                    }}
+                                />
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+                                    <button
+                                        type='button'
+                                        onClick={handleCloseModal}
+                                        style={{
+                                            marginRight: '10px',
+                                            padding: '5px 15px',
+                                            backgroundColor: 'gray',
+                                            borderRadius: '5px',
+                                            border: 'none',
+                                            color: 'white',
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type='submit'
+                                        style={{
+                                            padding: '5px 15px',
+                                            backgroundColor: 'green',
+                                            borderRadius: '5px',
+                                            border: 'none',
+                                            color: 'white',
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        Submit
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
+
+                {isReportSubmitted && (
+                    <div
+                        style={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <div
+                            style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', width: '400px' }}
+                        >
+                            <h2 style={{ color: 'red' }}>We have received your report for Lacy Smith</h2>
+                            <p style={{ color: 'black' }}>You will not match with them again</p>
+                            <button
+                                onClick={handleCloseModal}
+                                style={{
+                                    padding: '10px 20px',
+                                    backgroundColor: 'green',
+                                    borderRadius: '5px',
+                                    border: 'none',
+                                    color: 'white',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Back to PolyMeet
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
