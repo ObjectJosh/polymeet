@@ -7,14 +7,17 @@ const createJestConfig = nextJest({
 
 const config: Config = {
   preset: 'ts-jest',
-  testEnvironment: 'node', // Change to 'node' to avoid Mongoose warning and for proper server-side testing
+  testEnvironment: 'node',
   coverageProvider: 'v8',
   coverageDirectory: 'coverage',
   collectCoverage: true,
   collectCoverageFrom: [
-    'src/services/**/*.ts',  // Focus on backend services
+    'src/services/**/*.ts',  // backend
     'src/models/**/*.ts',
-    '!src/**/*.test.ts'
+    '!src/**/*.test.ts',
+    'src/app/components/Form.tsx', // frontend component
+    '!src/**/*.test.ts',
+    '!src/**/*.test.tsx'
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',

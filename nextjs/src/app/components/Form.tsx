@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { mutate } from 'swr';
-import { FormError, FormProps, UserForm, TResponse } from '@/types/types';
+import { FormError, FormProps, UserForm, TResponse } from '../../types/types';
 
 const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
     const router = useRouter();
