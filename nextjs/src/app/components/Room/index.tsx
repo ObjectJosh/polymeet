@@ -22,6 +22,13 @@ const servers = {
 export default function Room() {
     const server = 'https://polymeet-7137e04975b4.herokuapp.com/';
     const [socket, setSocket] = useState(io(server));
+    const partnerRef = useRef(null);
+
+    const [userId, setUserId] = useState<String>(v4());
+    const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+    const [videoClicked, setVideoClicked] = useState<Boolean>(false);
+
+    const [localStream, setLocalStream] = useState<MediaStream | null>(null);
     const localVideoRef = useRef<HTMLVideoElement>(null);
     const setLocalVideoRef = async (mediaStream: MediaStream | null) => {
         const newLocalVideo = localVideoRef.current;
@@ -30,12 +37,7 @@ export default function Room() {
             localVideoRef.controls = false;
         }
     };
-    const partnerRef = useRef(null);
 
-    const [userId, setUserId] = useState<String>(v4());
-    const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
-    const [videoClicked, setVideoClicked] = useState<Boolean>(false);
-    const [localStream, setLocalStream] = useState<MediaStream | null>(null);
     const [videoConfig, setVideoConfig] = useState<VideoConfig>({
         video: true,
         audio: true,
@@ -107,7 +109,7 @@ export default function Room() {
                 }}
             >
                 <p style={{ position: 'absolute', left: 20, top: 20 }}>Them</p>
-                {/* <video
+                <video
                     autoPlay={true}
                     muted={true}
                     playsInline
@@ -117,15 +119,7 @@ export default function Room() {
                         borderRadius: '10px',
                         objectFit: 'cover',
                     }}
-                ></video> */}
-                <div style={{ position: 'absolute', bottom: 10, left: 10, display: 'flex', gap: '10px' }}>
-                    <IconButton onClick={toggleStream} color='primary'>
-                        {videoConfig.video ? <VideocamOff /> : <Videocam />}
-                    </IconButton>
-                    <IconButton onClick={toggleAudio} color='primary'>
-                        {videoConfig.audio ? <MicOff /> : <Mic />}
-                    </IconButton>
-                </div>
+                ></video>
             </div>
             <div
                 style={{
