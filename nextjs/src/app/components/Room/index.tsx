@@ -149,7 +149,9 @@ export default function Room() {
             }, 20000000);
 
             socket.on('user_joined', async (userId) => {
-                // TODO: Set remote user by querying the database for the user with the given userId
+                // TODO: If same prev user, don't do anything
+                // TODO: Set remote user by querying the database for the user with the given userId and clear prev messages
+                setMessages([]);
                 setRemoteUser(userId);
                 console.log('Someone joined! timeout canceled.');
                 clearTimeout(joinTimeout);
