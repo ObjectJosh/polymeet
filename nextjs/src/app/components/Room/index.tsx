@@ -10,6 +10,7 @@ import { FaFlag } from 'react-icons/fa6';
 import { FaArrowRight } from 'react-icons/fa';
 
 import { User } from '@/models/User';
+import { text } from 'stream/consumers';
 
 interface Message {
     email: string;
@@ -28,6 +29,7 @@ const servers = {
 export default function Room() {
     // const [remoteUser, setRemoteUser] = useState<typeof User | null>(null);
     // const [localUser, setLocalUser] = useState<typeof User | null>(null);
+    const textRef = useRef<HTMLInputElement>(null);
 
     const [localUser, setLocalUser] = useState({
         email: 'm@calpoly.edu',
@@ -39,7 +41,7 @@ export default function Room() {
         firstName: 'Minnie',
         lastName: 'Mouse',
     });
-    const [messages, setMessages] = useState<Message[]>([
+    const [messages, setMessages] = useState<Message[] | null>([
         {
             email: 'm@calpoly.edu',
             message: 'Hi!',
@@ -49,7 +51,7 @@ export default function Room() {
             message: 'Nice to meet you!',
         },
     ]);
-
+    const [message, setMessage] = useState<Message | null>(null);
     const [userData, setUserData] = useState(null);
     const server = 'https://polymeet-7137e04975b4.herokuapp.com/';
     const [socket, setSocket] = useState(io(server));
@@ -69,12 +71,41 @@ export default function Room() {
     const hasRunRef = useRef(false);
 
     useEffect(() => {
+        if (!message) return;
+        setMessages([...messages, message]);
+        setMessage(null);
+    }, [message]);
+
+    function sendMessage() {
+        const r: any = textRef.current;
+        if (!r) return;
+        const message = r.value;
+        r.value = '';
+        socket.emit('send_message', {
+            message,
+            email: localUser.email,
+        });
+        console.log('Message sent!');
+    }
+
+    useEffect(() => {
         if (hasRunRef.current) {
             return;
         }
         setLocalStream(new MediaStream());
         hasRunRef.current = true;
         initialize();
+
+        function keyDownHandler(e: any) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        document.addEventListener('keydown', keyDownHandler);
+
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
     }, []);
 
     useEffect(() => {
@@ -156,6 +187,11 @@ export default function Room() {
                 const offerDescription = await peer.createOffer();
                 peer.setLocalDescription(offerDescription);
             });
+        });
+
+        socket.on('new_message', (new_msg) => {
+            console.log('New message received!');
+            setMessage(new_msg);
         });
 
         socket.on('reset', () => {
@@ -312,7 +348,7 @@ export default function Room() {
                 </div>
             </div>
 
-            <div style={{ display: 'flex', marginTop: '20px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', marginTop: '20px' }}>
                 <div style={{ flex: 2, marginLeft: '20px', position: 'relative' }}>
                     <div
                         style={{
@@ -425,13 +461,14 @@ export default function Room() {
                         display: 'flex',
                         justifyContent: 'space-between',
                         bottom: 0,
-                        position: 'absolute',
+                        position: '',
                         width: '100%',
                     }}
                 >
                     <input
                         type='text'
                         placeholder='Send a message...'
+                        ref={textRef}
                         style={{
                             flexGrow: 1,
                             borderRadius: '20px 0 0 20px',
@@ -443,6 +480,7 @@ export default function Room() {
                         }}
                     />
                     <button
+                        onClick={sendMessage}
                         style={{
                             padding: '10px 20px',
                             fontSize: '16px',
