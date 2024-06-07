@@ -16,24 +16,30 @@ export default function Home() {
 
     // TODO: Change to get user matched with (right now gets info for user logged in)
     useEffect(() => {
-        const fetchUserData = async () => {
-            const email = localStorage.getItem('userEmail');
-            if (email) {
-                try {
-                    const response = await fetch(`/api/users/${email}`);
-                    const data = await response.json();
-                    if (data.success) {
-                        setUserData(data.data);
-                    } else {
-                        console.error('Failed to fetch user data:', data.error);
+        if (typeof window !== 'undefined') {
+            const fetchUserData = async () => {
+                const email = localStorage.getItem('userEmail');
+                if (email) {
+                    try {
+                        const response = await fetch(`/api/users/${email}`);
+                        const data = await response.json();
+                        if (data.success) {
+                            if (data.data.banned) {
+                                window.location.href = '/banned';
+                            } else {
+                                setUserData(data.data);
+                            }
+                        } else {
+                            console.error('Failed to fetch user data:', data.error);
+                        }
+                    } catch (error) {
+                        console.error('Error fetching user data:', error);
                     }
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
                 }
-            }
-        };
+            };
 
-        fetchUserData();
+            fetchUserData();
+        }
     }, []);
 
     const handleFlagClick = () => {
@@ -285,63 +291,43 @@ export default function Home() {
                         left: 0,
                         width: '100%',
                         height: '100%',
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        backgroundColor: 'rgba(0,0,0,0.5)',
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
                     }}
                 >
-                    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', width: '400px' }}>
-                        <h2 style={{ color: 'red' }}>Report Lacy Smith?</h2>
-                        <p style={{ color: 'black' }}>By reporting this user, you will not match with them again.</p>
+                    <div
+                        style={{
+                            backgroundColor: 'white',
+                            padding: '20px',
+                            borderRadius: '10px',
+                            maxWidth: '500px',
+                            width: '100%',
+                        }}
+                    >
+                        <h2>Report User</h2>
                         <form onSubmit={handleSubmit}>
-                            <textarea
-                                placeholder='Reason for reporting...'
-                                style={{
-                                    width: '100%',
-                                    height: '100px',
-                                    padding: '10px',
-                                    borderRadius: '5px',
-                                    border: '1px solid #BFCAD8',
-                                    color: 'black',
-                                }}
-                            />
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
-                                <button
-                                    type='button'
-                                    onClick={handleCloseModal}
-                                    style={{
-                                        marginRight: '10px',
-                                        padding: '5px 15px',
-                                        backgroundColor: 'gray',
-                                        borderRadius: '5px',
-                                        border: 'none',
-                                        color: 'white',
-                                        cursor: 'pointer',
-                                    }}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type='submit'
-                                    style={{
-                                        padding: '5px 15px',
-                                        backgroundColor: 'green',
-                                        borderRadius: '5px',
-                                        border: 'none',
-                                        color: 'white',
-                                        cursor: 'pointer',
-                                    }}
-                                >
-                                    Submit
-                                </button>
-                            </div>
+                            <label>
+                                Reason:
+                                <textarea required style={{ width: '100%', padding: '10px', margin: '10px 0' }} />
+                            </label>
+                            <button type='submit' style={{ padding: '10px 20px', cursor: 'pointer' }}>
+                                Submit
+                            </button>
+                            <button
+                                type='button'
+                                onClick={handleCloseModal}
+                                style={{ padding: '10px 20px', cursor: 'pointer', marginLeft: '10px' }}
+                            >
+                                Cancel
+                            </button>
                         </form>
                     </div>
                 </div>
             )}
 
-            {isReportSubmitted && (
+            {isModalOpen && isReportSubmitted && (
                 <div
                     style={{
                         position: 'fixed',
@@ -349,27 +335,24 @@ export default function Home() {
                         left: 0,
                         width: '100%',
                         height: '100%',
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        backgroundColor: 'rgba(0,0,0,0.5)',
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
                     }}
                 >
-                    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', width: '400px' }}>
-                        <h2 style={{ color: 'red' }}>We have received your report for Lacy Smith</h2>
-                        <p style={{ color: 'black' }}>You will not match with them again</p>
-                        <button
-                            onClick={handleCloseModal}
-                            style={{
-                                padding: '10px 20px',
-                                backgroundColor: 'green',
-                                borderRadius: '5px',
-                                border: 'none',
-                                color: 'white',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Back to PolyMeet
+                    <div
+                        style={{
+                            backgroundColor: 'white',
+                            padding: '20px',
+                            borderRadius: '10px',
+                            maxWidth: '500px',
+                            width: '100%',
+                        }}
+                    >
+                        <h2>Report Submitted</h2>
+                        <button onClick={handleCloseModal} style={{ padding: '10px 20px', cursor: 'pointer' }}>
+                            Close
                         </button>
                     </div>
                 </div>
