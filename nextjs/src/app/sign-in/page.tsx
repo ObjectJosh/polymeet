@@ -5,6 +5,7 @@ import { Box, Button, TextField, Typography, IconButton, InputAdornment, SxProps
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { LoginLink } from '@kinde-oss/kinde-auth-nextjs/components';
+import axios from 'axios';
 
 const Header = ({ text }: { text: string }) => (
     <Typography
@@ -98,16 +99,32 @@ const CustomButton = ({ onClick, children }: { onClick: () => void; children: Re
 
 const SignIn: React.FC = () => {
     const [email, setEmail] = useState('');
-    const handleNext = () => {
+
+    const handleNext = async () => {
         if (email) {
             localStorage.setItem('userEmail', email);
-            window.location.href = '/';
+
+            try {
+                const response = await axios.get(`/api/users/${email}`);
+                const user = response.data;
+
+                if (user.banned) {
+                    window.location.href = '/banned';
+                } else {
+                    window.location.href = '/chat';
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                // Handle error (e.g., show a toast message)
+            }
         }
     };
+
     useEffect(() => {
         const email = localStorage.getItem('userEmail');
         console.log('Email from localStorage:', email);
     }, []);
+
     return (
         <Box
             sx={{
@@ -140,21 +157,10 @@ const SignIn: React.FC = () => {
                 authUrlParams={{
                     connection_id: process.env.NEXT_PUBLIC_KINDE_CONNECTION_EMAIL_PASSWORDLESS || '',
                     login_hint: email,
-                    // user_metadata: {
-                    //     first_name: '',
-                    //     last_name: '',
-                    // },
                 }}
             >
                 <CustomButton onClick={() => email && handleNext()}>Log In</CustomButton>
             </LoginLink>
-            {/* Commented this out because we're using passwordless */}
-            {/* <Typography variant='body1' sx={{ mt: 2 }}>
-                Forgot your password? Reset it{' '}
-                <Link href='/forgot-password' sx={{ color: '#4285F4' }}>
-                    here
-                </Link>
-            </Typography> */}
             <Typography variant='body1' sx={{ mt: 2 }}>
                 New user? Sign up{' '}
                 <Link sx={{ color: '#4285F4' }} href='/create-account'>

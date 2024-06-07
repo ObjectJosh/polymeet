@@ -308,7 +308,12 @@ const CreateAccount: React.FC = () => {
                             >
                                 First name
                             </Typography>
-                            <CustomTextField label='' reallyFullWidth value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                            <CustomTextField
+                                label=''
+                                reallyFullWidth
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                            />
                         </Box>
                         <Box>
                             <Typography
@@ -324,7 +329,12 @@ const CreateAccount: React.FC = () => {
                             >
                                 Last name
                             </Typography>
-                            <CustomTextField label='' reallyFullWidth value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                            <CustomTextField
+                                label=''
+                                reallyFullWidth
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                            />
                         </Box>
                         <CustomButton onClick={() => firstName && lastName && handleNext()}>Next →</CustomButton>
                     </>
