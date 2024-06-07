@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
-import User from '@/models/User'; // Assuming the Appeal is part of the User model
+import User from '@/models/User';
 
 export async function GET() {
     await dbConnect();
@@ -18,8 +18,8 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     await dbConnect();
     try {
-        const { userId, appealText } = await req.json(); // Extract userId and appealText from the request body
-        const user = await User.findById(userId);
+        const { email, appealText } = await req.json(); // Extract email and appeal from the request body
+        const user = await User.findOne({ email });
         if (!user) {
             return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
         }

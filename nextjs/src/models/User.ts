@@ -72,6 +72,7 @@ const UserSchema = new mongoose.Schema<User>({
     appeal: {
         type: String,
         maxlength: [2000, 'Appeal cannot be more than 2,000 characters'],
+        default: '',
     },
     createDate: {
         type: Date,
