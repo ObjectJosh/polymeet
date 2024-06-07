@@ -63,7 +63,7 @@ export default function Room() {
         r.value = '';
         socket.emit('send_message', {
             message,
-            email: localUser.email,
+            email: localUser.current.email, // Access the current value of the localUser ref and then access the email property
         });
         console.log('Message sent!');
     }
