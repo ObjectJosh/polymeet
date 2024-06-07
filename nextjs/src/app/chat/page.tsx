@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { FaFlag } from 'react-icons/fa6';
 import { FaCog } from 'react-icons/fa';
 import { FaArrowRight } from 'react-icons/fa';
+import Room from '../components/Room';
 
 import user from '../user.png';
 
@@ -67,7 +68,15 @@ export default function Home() {
     };
 
     return (
-        <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', backgroundColor: '#070D1B', height: '100vh' }}>
+        <div
+            style={{
+                fontFamily: 'Arial, sans-serif',
+                padding: '20px',
+                backgroundColor: '#070D1B',
+                height: '100vh',
+                boxSizing: 'border-box',
+            }}
+        >
             <Head>
                 <title>Poly Meet</title>
             </Head>
@@ -94,7 +103,11 @@ export default function Home() {
                 </a>
             </nav>
 
-            <div style={{ display: 'flex', marginTop: '20px' }}>
+            <div style={{ height: '90vh' }}>
+                <Room />
+            </div>
+
+            {/* <div style={{ display: 'flex', marginTop: '20px' }}>
                 <div style={{ flex: 1 }}>
                     <div
                         style={{
@@ -409,7 +422,7 @@ export default function Home() {
                         </button>
                     </div>
                 </div>
-            )}
+            )} */}
         </div>
     );
 }
