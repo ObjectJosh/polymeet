@@ -1,6 +1,6 @@
 'use client';
 
-import { VideoConfig, getLocalStream } from '../webrtc';
+import { VideoConfig } from '../webrtc';
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { v4 } from 'uuid';
@@ -24,44 +24,63 @@ export default function Room() {
     const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
     const [localStream, setLocalStream] = useState<MediaStream | null>(null);
 
-    const remoteVideoRef = useRef<HTMLVideoElement>(null);
-    const setRemoteVideoRef = async (mediaStream: MediaStream | null) => {
-        const retVid = remoteVideoRef.current;
-        if (retVid) {
-            retVid.srcObject = mediaStream;
-            retVid.controls = false;
-        }
-    };
+    const partnerRef = useRef<HTMLVideoElement>(null);
     const localVideoRef = useRef<HTMLVideoElement>(null);
-    const setLocalVideoRef = async (mediaStream: MediaStream | null) => {
-        const vid = localVideoRef.current;
-        if (vid) {
-            vid.srcObject = mediaStream;
-            vid.controls = false;
-        }
-    };
 
     const [videoConfig, setVideoConfig] = useState<VideoConfig>({
         video: true,
         audio: true,
     });
 
+    const hasRunRef = useRef(false);
+
     useEffect(() => {
+        if (hasRunRef.current) {
+            return;
+        }
+        setLocalStream(new MediaStream());
+        hasRunRef.current = true;
         initialize();
     }, []);
 
-    const localVideoHandler = async () => {
-        getLocalStream(videoConfig.video, videoConfig.audio).then((stream) => {
-            setLocalVideoRef(stream);
+    useEffect(() => {
+        //ref.current.srcObject = localStream;
+        if (!localVideoRef.current) return;
+        const v: any = localVideoRef.current;
+        v.srcObject = localStream;
+    }, [localStream]);
+
+    useEffect(() => {
+        //ref.current.srcObject = localStream;
+        if (!partnerRef.current) return;
+        const v: any = partnerRef.current;
+        v.srcObject = remoteStream;
+    }, [remoteStream]);
+
+    useEffect(() => {
+        localStream?.getVideoTracks().forEach((track) => {
+            track.enabled = videoConfig.video;
         });
-    };
+        localStream?.getAudioTracks().forEach((track) => {
+            track.enabled = videoConfig.audio;
+        });
+    }, [videoConfig]);
 
     async function initialize() {
         let peer: RTCPeerConnection;
         let joinTimeout: any;
         let offerSent = false;
         let answerSent = false;
-        localVideoHandler();
+        let stream: any;
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+                video: true,
+            });
+            setLocalStream(stream);
+        } catch (err) {
+            console.log(err);
+        }
 
         // Signals to the server that a new user just joined the call
         console.log('Joining room...');
@@ -85,8 +104,8 @@ export default function Room() {
                     setRemoteStream(e.streams[0]);
                 };
 
-                localStream.getTracks().forEach((track: any) => {
-                    peer.addTrack(track, localStream);
+                stream.getTracks().forEach((track: any) => {
+                    peer.addTrack(track, stream);
                 });
 
                 peer.onicecandidate = (e) => {
@@ -120,8 +139,8 @@ export default function Room() {
                 setRemoteStream(e.streams[0]);
             };
 
-            localStream.getTracks().forEach((track: any) => {
-                peer.addTrack(track, localStream);
+            stream.getTracks().forEach((track: any) => {
+                peer.addTrack(track, stream);
             });
 
             peer.onicecandidate = (e) => {
@@ -146,19 +165,6 @@ export default function Room() {
             peer.addIceCandidate(candidate);
         });
     }
-
-    useEffect(() => {
-        if (videoConfig.video || videoConfig.audio) {
-            localVideoHandler();
-        } else {
-            setLocalVideoRef(null);
-        }
-    }, [videoConfig]);
-
-    useEffect(() => {
-        console.log(remoteStream);
-        setRemoteVideoRef(remoteStream);
-    }, [remoteStream]);
 
     const toggleStream = async () => {
         console.log('Starting stream...');
@@ -194,9 +200,9 @@ export default function Room() {
             >
                 <p style={{ position: 'absolute', left: 20, top: 20 }}>Them</p>
                 <video
-                    ref={remoteVideoRef}
+                    ref={partnerRef}
                     autoPlay={true}
-                    muted={true}
+                    muted={false}
                     playsInline
                     style={{
                         width: '100%',
