@@ -1,6 +1,6 @@
 'use client';
 
-import { VideoConfig } from '../webrtc';
+import { fetchUserData, VideoConfig } from '../webrtc';
 import { useState, useRef, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { Videocam, VideocamOff, Mic, MicOff } from '@mui/icons-material';
@@ -23,28 +23,13 @@ const servers = {
 };
 
 export default function Room() {
-    // const [remoteUser, setRemoteUser] = useState<typeof User | null>(null);
-    // const [localUser, setLocalUser] = useState<typeof User | null>(null);
     const textRef = useRef<HTMLInputElement>(null);
+    const localUser = useRef(null);
+    const [remoteUser, setRemoteUser] = useState(null);
 
-    const [localUser, setLocalUser] = useState({
-        email: '',
-        firstName: '',
-        lastName: '',
-    });
-    const [remoteUser, setRemoteUser] = useState({
-        email: 'mss@calpoly.edu',
-        firstName: 'Minnie',
-        lastName: 'Mouse',
-        major: 'Computer Science',
-        year: 'Senior',
-        hobbies: ['Climbing'],
-        classes: ['CSC 123'],
-        clubs: ['CS+AI'],
-    });
     const [messages, setMessages] = useState<Message[]>([]);
     const [message, setMessage] = useState<Message | null>(null);
-    const server = 'https://polymeet-7137e04975b4.herokuapp.com/';
+    const server = 'localhost:8000/';
     const [socket, setSocket] = useState(io(server));
 
     const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
@@ -58,38 +43,12 @@ export default function Room() {
         audio: true,
     });
 
+    const email = useRef<string | null>(null);
+
     const [isModalOpen, setModalOpen] = useState(false);
     const [isReportSubmitted, setReportSubmitted] = useState(false);
 
     const hasRunRef = useRef(false);
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const email = localStorage.getItem('userEmail');
-                console.log('Email from localStorage:', email);
-
-                if (!email) {
-                    console.error('No email found in localStorage');
-                    return;
-                }
-
-                const response = await fetch(`/api/users/${email}`);
-                const data = await response.json();
-                if (data.success) {
-                    const user = data.data;
-                    setLocalUser(user);
-                    console.log('User data:', user);
-                } else {
-                    console.error('User not found:', data.error);
-                }
-            } catch (error) {
-                console.error('Failed to fetch user data:', error);
-            }
-        };
-
-        fetchUserData();
-    }, []);
 
     useEffect(() => {
         if (!message) return;
@@ -125,6 +84,11 @@ export default function Room() {
             return;
         }
         hasRunRef.current = true;
+        email.current = localStorage.getItem('userEmail');
+        console.log('Email from localStorage:', email);
+        fetchUserData(email.current).then((user) => {
+            localUser.current = user;
+        });
 
         setLocalStream(new MediaStream());
         initialize();
@@ -174,21 +138,23 @@ export default function Room() {
 
         // Signals to the server that a new user just joined the call
         console.log('Joining room...');
-        socket.emit('joinRoom', { userId: localUser.email });
+        socket.emit('joinRoom', { userId: localUser.current.email });
 
         socket.on('waiting', () => {
             console.log('Waiting 20 seconds for someone to join...');
             joinTimeout = setTimeout(() => {
                 console.log('No one joined, searching for a room...');
-                socket.emit('joinRoom', { userId: localUser.email });
+                socket.emit('joinRoom', { userId: localUser.current.email });
             }, 20000000);
 
-            socket.on('user_joined', async (userId) => {
-                // TODO: If same prev user, don't do anything
-                // TODO: Set remote user by querying the database for the user with the given userId and clear prev messages
-                setMessages([]);
-                setRemoteUser(userId);
+            socket.on('user_joined', async (data) => {
                 console.log('Someone joined! timeout canceled.');
+                console.log('User who joined', data.userId);
+                fetchUserData(data.userId).then((user) => {
+                    setRemoteUser(user);
+                    console.log('Remote user:', user);
+                });
+                setMessages([]);
                 clearTimeout(joinTimeout);
 
                 peer = new RTCPeerConnection(servers);
@@ -225,7 +191,7 @@ export default function Room() {
 
         socket.on('reset', () => {
             setRemoteStream(null);
-            socket.emit('joinRoom', { userId: localUser.email });
+            socket.emit('joinRoom', { userId: localUser.current.email });
             offerSent = false;
             answerSent = false;
         });
@@ -288,7 +254,7 @@ export default function Room() {
     const handleCloseModal = () => {
         setModalOpen(false);
         setReportSubmitted(false);
-        window.location.reload(); 
+        window.location.reload();
     };
 
     const handleSubmit = (event: { preventDefault: () => void }) => {
@@ -360,7 +326,11 @@ export default function Room() {
                         position: 'relative',
                     }}
                 >
-                    <p style={{ position: 'absolute', left: 20, top: 20 }}>You</p>
+                    <p style={{ position: 'absolute', left: 20, top: 20 }}>
+                        {localUser.current
+                            ? `${localUser.current.firstName} ${localUser.current.lastName}`
+                            : 'Loading...'}
+                    </p>
                     <video
                         ref={localVideoRef}
                         autoPlay={true}
@@ -477,7 +447,7 @@ export default function Room() {
                             }}
                         >
                             {messages.map((msg, index) =>
-                                msg.email === localUser.email ? (
+                                msg.email === localUser.current.email ? (
                                     <div
                                         key={index}
                                         style={{
