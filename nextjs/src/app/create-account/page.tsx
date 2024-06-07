@@ -73,6 +73,7 @@ const CustomTextField = ({
     select = false,
     value,
     onChange,
+    reallyFullWidth = false,
     children,
 }: {
     label: string;
@@ -80,6 +81,7 @@ const CustomTextField = ({
     select?: boolean;
     value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    reallyFullWidth?: boolean;
     children?: React.ReactNode;
 }) => (
     <TextField
@@ -90,7 +92,7 @@ const CustomTextField = ({
         value={value}
         onChange={onChange}
         sx={{
-            width: '70%',
+            width: reallyFullWidth ? '100%' : '70%',
             marginBottom: '20px',
             backgroundColor: '#E2E8F0',
             borderRadius: '8px',
@@ -142,7 +144,8 @@ const CreateAccount: React.FC = () => {
     const [email, setEmail] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
     const [emailValid, setEmailValid] = useState(false);
-    const [fullName, setFullName] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [major, setMajor] = useState('');
     const [year, setYear] = useState('');
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -156,18 +159,18 @@ const CreateAccount: React.FC = () => {
         if (p) {
             setStep(parseInt(p));
         }
+        const storedEmail = localStorage.getItem('email');
+        if (storedEmail) {
+            setEmail(storedEmail);
+            setEmailValid(validateEmail(storedEmail));
+        }
     }, [searchParams]);
 
     const handleNext = async () => {
-        console.log('Step:', step);
         if (step < totalSteps) {
             setStep(step + 1);
             return;
         }
-
-        const fullNameParts = fullName.split(' ');
-        const firstName = fullNameParts[0];
-        const lastName = fullNameParts.slice(1).join(' ');
 
         // Basic validation
         if (!email || !firstName || !lastName) {
@@ -221,6 +224,8 @@ const CreateAccount: React.FC = () => {
         const newEmail = e.target.value;
         setEmail(newEmail);
         setEmailValid(validateEmail(newEmail));
+
+        localStorage.setItem('email', newEmail);
     };
 
     const renderStepContent = (step: number) => {
@@ -289,21 +294,39 @@ const CreateAccount: React.FC = () => {
                 return (
                     <>
                         <Header text='Create your account' />
-                        <Typography
-                            sx={{
-                                marginBottom: '0',
-                                marginTop: '5rem',
-                                color: '#BFCAD8',
-                                fontWeight: 'regular',
-                                fontSize: '24px',
-                                letterSpacing: '-0.6%',
-                                paddingRight: '640px',
-                            }}
-                        >
-                            Enter your full name (ex. John Doe)
-                        </Typography>
-                        <CustomTextField label='' value={fullName} onChange={(e) => setFullName(e.target.value)} />
-                        <CustomButton onClick={() => fullName && handleNext()}>Next →</CustomButton>
+                        <Box>
+                            <Typography
+                                sx={{
+                                    marginBottom: '0',
+                                    marginTop: '5rem',
+                                    color: '#BFCAD8',
+                                    fontWeight: 'regular',
+                                    fontSize: '24px',
+                                    letterSpacing: '-0.6%',
+                                    paddingRight: '640px',
+                                }}
+                            >
+                                First name
+                            </Typography>
+                            <CustomTextField label='' reallyFullWidth value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                        </Box>
+                        <Box>
+                            <Typography
+                                sx={{
+                                    marginBottom: '0',
+                                    marginTop: '1rem',
+                                    color: '#BFCAD8',
+                                    fontWeight: 'regular',
+                                    fontSize: '24px',
+                                    letterSpacing: '-0.6%',
+                                    paddingRight: '640px',
+                                }}
+                            >
+                                Last name
+                            </Typography>
+                            <CustomTextField label='' reallyFullWidth value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                        </Box>
+                        <CustomButton onClick={() => firstName && lastName && handleNext()}>Next →</CustomButton>
                     </>
                 );
             case 4: // select major and year
