@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { FaFlag } from 'react-icons/fa6';
@@ -14,6 +14,36 @@ export default function Home() {
     const [isReportSubmitted, setReportSubmitted] = useState(false);
     const [reportReason, setReportReason] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+
+    const [userData, setUserData] = useState(null);
+
+    // TODO: Change to get user matched with (right now gets info for user logged in)
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const fetchUserData = async () => {
+                const email = localStorage.getItem('userEmail');
+                if (email) {
+                    try {
+                        const response = await fetch(`/api/users/${email}`);
+                        const data = await response.json();
+                        if (data.success) {
+                            if (data.data.banned) {
+                                window.location.href = '/banned';
+                            } else {
+                                setUserData(data.data);
+                            }
+                        } else {
+                            console.error('Failed to fetch user data:', data.error);
+                        }
+                    } catch (error) {
+                        console.error('Error fetching user data:', error);
+                    }
+                }
+            };
+
+            fetchUserData();
+        }
+    }, []);
 
     const handleFlagClick = () => {
         setModalOpen(true);
@@ -53,7 +83,7 @@ export default function Home() {
                     padding: '5px',
                 }}
             >
-                <a href='/' style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+                <a href='/chat' style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
                     <div style={{ padding: '5px', borderRadius: '50%' }}>
                         <Image src={user} alt='PolyMeet logo' width={30} height={30} />
                     </div>
@@ -80,7 +110,9 @@ export default function Home() {
                             position: 'relative',
                         }}
                     >
-                        <p style={{ position: 'absolute', left: 10, top: 10 }}>Lacy Smith</p>
+                        <p style={{ position: 'absolute', left: 10, top: 10 }}>
+                            {userData ? `${userData.firstName} ${userData.lastName}` : 'Loading...'}
+                        </p>
                     </div>
                     <div
                         style={{
@@ -141,11 +173,14 @@ export default function Home() {
                                     borderRadius: 20,
                                 }}
                             >
-                                Chatting With:&nbsp;<span style={{ color: 'white' }}>Lacy Smith</span>
+                                Chatting With:&nbsp;
+                                <span style={{ color: 'white' }}>
+                                    {userData ? `${userData.firstName} ${userData.lastName}` : 'Loading...'}
+                                </span>
                             </strong>
                         </div>
-                        <p>Major: Computer Science</p>
-                        <p>Year: Sophomore, C/O 2026</p>
+                        <p>Major: {userData ? userData.major : 'Loading...'}</p>
+                        <p>Year: {userData ? userData.year : 'Loading...'}</p>
                         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
                             <p>Tags:</p>
                             <div
@@ -157,19 +192,21 @@ export default function Home() {
                                     width: '100%',
                                 }}
                             >
-                                {['Music', 'Climbing', 'CSC 357'].map((tag) => (
-                                    <div
-                                        key={tag}
-                                        style={{
-                                            backgroundColor: '#FFD700',
-                                            padding: '10px 30px',
-                                            borderRadius: '10px',
-                                            color: 'black',
-                                        }}
-                                    >
-                                        {tag}
-                                    </div>
-                                ))}
+                                {userData
+                                    ? [...userData.hobbies, ...userData.classes, ...userData.clubs].map((tag) => (
+                                          <div
+                                              key={tag}
+                                              style={{
+                                                  backgroundColor: '#FFD700',
+                                                  padding: '10px 30px',
+                                                  borderRadius: '10px',
+                                                  color: 'black',
+                                              }}
+                                          >
+                                              {tag}
+                                          </div>
+                                      ))
+                                    : 'Loading...'}
                             </div>
                         </div>
                     </div>
@@ -264,7 +301,7 @@ export default function Home() {
                         left: 0,
                         width: '100%',
                         height: '100%',
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        backgroundColor: 'rgba(0,0,0,0.5)',
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
@@ -275,11 +312,11 @@ export default function Home() {
                             backgroundColor: 'white',
                             padding: '20px',
                             borderRadius: '10px',
-                            width: '400px',
-                            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                            maxWidth: '500px',
+                            width: '100%',
                         }}
                     >
-                        <h2 style={{ color: '#d32f2f', marginBottom: '10px' }}>Report Lacy Smith?</h2>
+                        <h2 style={{ color: '#d32f2f', marginBottom: '10px' }}>Report User</h2>
                         <p style={{ color: '#333', marginBottom: '20px' }}>
                             By reporting this user, you will not match with them again.
                         </p>
