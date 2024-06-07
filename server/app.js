@@ -3,7 +3,7 @@ const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
     cors: {
-        origin: 'http://localhost:5173',
+        origin: '*',
     }
 });
 const bodyParser = require('body-parser');
@@ -18,14 +18,12 @@ const { Mutex } = require('async-mutex');
 const mutex = new Mutex();
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: '*',
 }))
-
-var serviceAccount = require("./polychat.json");
 
 // Initializing database :
 initializeApp({
-    credential: cert(serviceAccount)
+    credential: cert(require('./polychat.json'))
 }); 
 
 const db = getFirestore();
@@ -116,6 +114,4 @@ function deleteRoom(roomId) {
     })
 }
 
-server.listen(port, () => {
-  console.log(`[server]: Server is listening at http://localhost:${port}`);
-});
+server.listen(port, console.log(`Server opened on port: ${port}`));
