@@ -5,9 +5,11 @@ import Image from 'next/image';
 import { Typography, IconButton, Box, TextField, MenuItem, Button } from '@mui/material';
 import { Edit as EditIcon } from '@mui/icons-material';
 import user from '../user.png';
+import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 import majorsData from './majors.json';
 
 export default function Settings() {
+    const { logout } = useKindeAuth();
     const [editMode, setEditMode] = useState({
         name: false,
         email: false,
@@ -232,20 +234,20 @@ export default function Settings() {
                     </div>
                     <div style={{ color: '#006155', fontSize: '24px' }}>PolyMeet</div>
                 </a>
-                <a href='/welcome-page' style={{ textDecoration: 'none' }}>
-                    <button
-                        style={{
-                            backgroundColor: 'red',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '5px',
-                            padding: '10px 20px',
-                            cursor: 'pointer',
-                        }}
-                    >
-                        Log Out
-                    </button>
-                </a>
+                <button
+                    style={{
+                        backgroundColor: 'red',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '5px',
+                        padding: '10px 20px',
+                        cursor: 'pointer',
+                    }}
+                    onClick={logout}
+                    type='button'
+                >
+                    Log Out
+                </button>
             </nav>
 
             <Header text='Account Settings' />
@@ -308,3 +310,49 @@ export default function Settings() {
         </div>
     );
 }
+
+const Header = ({ text }: { text: string }) => (
+    <Typography
+        variant='h1'
+        sx={{
+            marginBottom: '20px',
+            marginTop: '3rem',
+            color: '#BFCAD8',
+            fontWeight: 'bold',
+            fontSize: '60px',
+            lineHeight: 'auto',
+            letterSpacing: '-0.02em',
+            textAlign: 'center',
+        }}
+    >
+        {text}
+    </Typography>
+);
+
+const Field = ({ label, value }: { label: string; value: string }) => (
+    <Box sx={{ marginBottom: '20px' }}>
+        <Typography variant='h6' sx={{ color: '#BFCAD8' }}>
+            {label}
+        </Typography>
+        <Typography variant='body1' sx={{ display: 'flex', alignItems: 'center', color: '#BFCAD8' }}>
+            {value}
+            <IconButton sx={{ marginLeft: '10px' }}>
+                <EditIcon sx={{ color: '#BFCAD8' }} />
+            </IconButton>
+        </Typography>
+    </Box>
+);
+
+const Tag = ({ label }: { label: string }) => (
+    <Box
+        sx={{
+            backgroundColor: '#F9AD16',
+            padding: '5px 10px',
+            borderRadius: '10px',
+            color: 'black',
+            marginRight: '10px',
+        }}
+    >
+        {label}
+    </Box>
+);
