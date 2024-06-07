@@ -57,7 +57,6 @@ export default function Room() {
         if (!localVideoRef.current) return;
         const v: any = localVideoRef.current;
         v.srcObject = localStream;
-        v.muted = true;
         v.play();
     }, [localStream]);
 
@@ -93,6 +92,41 @@ export default function Room() {
 
     return (
         <div id='meet'>
+            <div
+                style={{
+                    width: 700,
+                    height: 325,
+                    background: '#475569',
+                    padding: '10px',
+                    borderRadius: '10px',
+                    marginBottom: '10px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    position: 'relative',
+                }}
+            >
+                <p style={{ position: 'absolute', left: 20, top: 20 }}>Them</p>
+                {/* <video
+                    autoPlay={true}
+                    muted={true}
+                    playsInline
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: '10px',
+                        objectFit: 'cover',
+                    }}
+                ></video> */}
+                <div style={{ position: 'absolute', bottom: 10, left: 10, display: 'flex', gap: '10px' }}>
+                    <IconButton onClick={toggleStream} color='primary'>
+                        {videoConfig.video ? <VideocamOff /> : <Videocam />}
+                    </IconButton>
+                    <IconButton onClick={toggleAudio} color='primary'>
+                        {videoConfig.audio ? <MicOff /> : <Mic />}
+                    </IconButton>
+                </div>
+            </div>
             <div
                 style={{
                     width: 700,
