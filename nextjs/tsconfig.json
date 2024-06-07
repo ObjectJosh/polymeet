@@ -26,6 +26,6 @@
         },
         "baseUrl": "./src"
     },
-    "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"],
+    "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "jest.setup.ts"],
     "exclude": ["node_modules"]
 }
