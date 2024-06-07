@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
-import { findUserById, updateUserById } from '@/services/user_services';
+import { findUserById, updateUserById } from '../../services/user_services';
 
 export default async function handler(req, res) {
     const { method } = req;

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
-import { getAllUsers, createUser } from '@/services/user_services';
+import { getAllUsers, createUser } from '../../../services/user_services';
 
 export async function GET() {
     await dbConnect();

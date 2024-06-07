@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
-import { findUserById, findUserByEmail, updateUserById, updateUserByEmail, deleteUserById, deleteUserByEmail } from '@/services/user_services';
+import { findUserById, findUserByEmail, updateUserById, updateUserByEmail, deleteUserById, deleteUserByEmail } from '../../../../services/user_services';
 
 export async function GET(req, { params }) {
     const { param } = params;
