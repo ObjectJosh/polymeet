@@ -29,7 +29,7 @@ export default function Room() {
 
     const [messages, setMessages] = useState<Message[]>([]);
     const [message, setMessage] = useState<Message | null>(null);
-    const server = 'localhost:8000/';
+    const server = 'https://polymeet-7137e04975b4.herokuapp.com/';
     const [socket, setSocket] = useState(io(server));
 
     const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
@@ -70,6 +70,7 @@ export default function Room() {
 
     useEffect(() => {
         socket.on('new_message', (new_msg) => {
+            console.log('New message received!');
             setMessage(new_msg);
         });
 
@@ -472,7 +473,10 @@ export default function Room() {
                                         }}
                                     >
                                         <p>
-                                            {remoteUser.firstName} {remoteUser.lastName}: {msg.message}
+                                            {remoteUser
+                                                ? `${remoteUser.firstName} ${remoteUser.lastName}`
+                                                : 'Loading...'}
+                                            : {msg.message}
                                         </p>
                                     </div>
                                 )
