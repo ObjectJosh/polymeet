@@ -65,102 +65,122 @@ export default function Settings() {
         label,
         value,
         onChange,
-        onBlur,
         type = 'text',
         select = false,
         options = [],
         editMode,
         toggleEditMode,
         field,
-    }) => (
-        <Box sx={{ marginBottom: '20px' }}>
-            <Typography variant='h6' sx={{ color: '#BFCAD8' }}>
-                {label}
-            </Typography>
-            {editMode ? (
-                select ? (
-                    <TextField
-                        select
-                        value={value}
-                        onChange={onChange}
-                        onBlur={() => handleSave(field, value)}
-                        variant='outlined'
-                        fullWidth
-                        sx={{
-                            width: '70%',
-                            marginBottom: '10px',
-                            backgroundColor: '#E2E8F0',
-                            borderRadius: '8px',
-                            '& .MuiOutlinedInput-root': {
-                                '& fieldset': {
-                                    borderColor: '#334155',
-                                },
-                                '&:hover fieldset': {
-                                    borderColor: '#006155',
-                                },
-                                '&.Mui-focused fieldset': {
-                                    borderColor: '#006155',
-                                },
-                            },
-                            input: {
-                                color: '#1E293B',
-                            },
-                            label: {
-                                color: '#64748B',
-                            },
-                        }}
-                    >
-                        {options.map((option) => (
-                            <MenuItem key={option} value={option}>
-                                {option}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                ) : (
-                    <TextField
-                        value={value}
-                        onChange={onChange}
-                        onBlur={() => handleSave(field, value)}
-                        variant='outlined'
-                        fullWidth
-                        autoFocus
-                        sx={{
-                            width: '70%',
-                            marginBottom: '10px',
-                            backgroundColor: '#E2E8F0',
-                            borderRadius: '8px',
-                            '& .MuiOutlinedInput-root': {
-                                '& fieldset': {
-                                    borderColor: '#334155',
-                                },
-                                '&:hover fieldset': {
-                                    borderColor: '#006155',
-                                },
-                                '&.Mui-focused fieldset': {
-                                    borderColor: '#006155',
-                                },
-                            },
-                            input: {
-                                color: '#1E293B',
-                            },
-                            label: {
-                                color: '#64748B',
-                            },
-                        }}
-                    />
-                )
-            ) : (
-                <Typography variant='body1' sx={{ display: 'flex', alignItems: 'center', color: '#BFCAD8' }}>
-                    {value}
-                    {label !== 'Email' && (
-                        <IconButton sx={{ marginLeft: '10px' }} onClick={toggleEditMode}>
-                            <EditIcon sx={{ color: '#BFCAD8' }} />
-                        </IconButton>
-                    )}
+        handleSave,
+    }) => {
+        const [localValue, setLocalValue] = useState(value);
+
+        const handleInputChange = (event) => {
+            setLocalValue(event.target.value);
+        };
+
+        const saveChanges = () => {
+            handleSave(field, localValue);
+            console.log(field, localValue);
+        };
+
+        return (
+            <Box sx={{ marginBottom: '20px' }}>
+                <Typography variant='h6' sx={{ color: '#BFCAD8' }}>
+                    {label}
                 </Typography>
-            )}
-        </Box>
-    );
+                {editMode ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        {select ? (
+                            <TextField
+                                select
+                                value={localValue}
+                                onChange={handleInputChange}
+                                variant='outlined'
+                                fullWidth
+                                sx={{
+                                    width: '70%',
+                                    marginBottom: '10px',
+                                    backgroundColor: '#E2E8F0',
+                                    borderRadius: '8px',
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: '#334155',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: '#006155',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: '#006155',
+                                        },
+                                    },
+                                    input: {
+                                        color: '#1E293B',
+                                    },
+                                    label: {
+                                        color: '#64748B',
+                                    },
+                                }}
+                            >
+                                {options.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        ) : (
+                            <TextField
+                                value={localValue}
+                                onChange={handleInputChange}
+                                variant='outlined'
+                                fullWidth
+                                autoFocus
+                                sx={{
+                                    width: '70%',
+                                    marginBottom: '10px',
+                                    backgroundColor: '#E2E8F0',
+                                    borderRadius: '8px',
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: '#334155',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: '#006155',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: '#006155',
+                                        },
+                                    },
+                                    input: {
+                                        color: '#1E293B',
+                                    },
+                                    label: {
+                                        color: '#64748B',
+                                    },
+                                }}
+                            />
+                        )}
+                        <Button
+                            onClick={saveChanges}
+                            variant='contained'
+                            sx={{ marginLeft: '10px', backgroundColor: 'green', color: 'white' }}
+                        >
+                            Save
+                        </Button>
+                    </Box>
+                ) : (
+                    <Typography variant='body1' sx={{ display: 'flex', alignItems: 'center', color: '#BFCAD8' }}>
+                        {value}
+                        {label !== 'Email' && (
+                            <IconButton sx={{ marginLeft: '10px' }} onClick={toggleEditMode}>
+                                <EditIcon sx={{ color: '#BFCAD8' }} />
+                            </IconButton>
+                        )}
+                    </Typography>
+                )}
+            </Box>
+        );
+    };
 
     const Tag = ({ label }) => (
         <Box
@@ -237,6 +257,7 @@ export default function Settings() {
                     editMode={editMode.name}
                     toggleEditMode={() => toggleEditMode('name')}
                     field='name'
+                    handleSave={handleSave}
                 />
                 <Field
                     label='Email'
@@ -245,29 +266,31 @@ export default function Settings() {
                     editMode={editMode.email}
                     toggleEditMode={() => toggleEditMode('email')}
                     field='email'
+                    handleSave={handleSave}
                 />
                 <Field
                     label='Year'
                     value={year}
                     onChange={(e) => setYear(e.target.value)}
-                    onBlur={() => handleSave('year', year)}
                     select
                     options={['First', 'Second', 'Third', 'Fourth', 'Fifth+']}
                     editMode={editMode.year}
                     toggleEditMode={() => toggleEditMode('year')}
                     field='year'
+                    handleSave={handleSave}
                 />
                 <Field
                     label='Major'
                     value={major}
                     onChange={(e) => setMajor(e.target.value)}
-                    onBlur={() => handleSave('major', major)}
                     select
                     options={majorsData.majors}
                     editMode={editMode.major}
                     toggleEditMode={() => toggleEditMode('major')}
                     field='major'
+                    handleSave={handleSave}
                 />
+
                 <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
                     <Typography variant='h6' sx={{ color: '#BFCAD8', marginRight: '10px' }}>
                         My Tags
