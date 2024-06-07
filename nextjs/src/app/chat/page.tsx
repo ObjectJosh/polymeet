@@ -12,6 +12,8 @@ import user from '../user.png';
 export default function Home() {
     const [isModalOpen, setModalOpen] = useState(false);
     const [isReportSubmitted, setReportSubmitted] = useState(false);
+    const [reportReason, setReportReason] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleFlagClick = () => {
         setModalOpen(true);
@@ -20,11 +22,17 @@ export default function Home() {
     const handleCloseModal = () => {
         setModalOpen(false);
         setReportSubmitted(false);
+        setReportReason('');
+        setErrorMessage('');
     };
 
     const handleSubmit = (event: { preventDefault: () => void }) => {
         event.preventDefault();
         // Handle the submit logic here
+        if (!reportReason.trim()) {
+            setErrorMessage('Must provide reason');
+            return;
+        }
         setReportSubmitted(true);
     };
 
@@ -268,6 +276,8 @@ export default function Home() {
                         <form onSubmit={handleSubmit}>
                             <textarea
                                 placeholder='Reason for reporting...'
+                                value={reportReason}
+                                onChange={(e) => setReportReason(e.target.value)}
                                 style={{
                                     width: '100%',
                                     height: '100px',
@@ -277,6 +287,9 @@ export default function Home() {
                                     color: 'black',
                                 }}
                             />
+                            {errorMessage && (
+                                <p style={{ color: 'red', marginTop: '5px', textAlign: 'center' }}>{errorMessage}</p>
+                            )}
                             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
                                 <button
                                     type='button'
