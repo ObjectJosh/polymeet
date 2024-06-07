@@ -121,7 +121,7 @@ const SignIn: React.FC = () => {
     };
 
     useEffect(() => {
-        const email = localStorage.getItem('userEmail');
+        const email = localStorage.getItem('email');
         console.log('Email from localStorage:', email);
     }, []);
 
