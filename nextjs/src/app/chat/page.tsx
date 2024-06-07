@@ -45,7 +45,7 @@ export default function Home() {
                     padding: '5px',
                 }}
             >
-                <a href='/' style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+                <a href='/chat' style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
                     <div style={{ padding: '5px', borderRadius: '50%' }}>
                         <Image src={user} alt='PolyMeet logo' width={30} height={30} />
                     </div>
