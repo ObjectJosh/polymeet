@@ -270,9 +270,19 @@ export default function Home() {
                         alignItems: 'center',
                     }}
                 >
-                    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', width: '400px' }}>
-                        <h2 style={{ color: 'red' }}>Report Lacy Smith?</h2>
-                        <p style={{ color: 'black' }}>By reporting this user, you will not match with them again.</p>
+                    <div
+                        style={{
+                            backgroundColor: 'white',
+                            padding: '20px',
+                            borderRadius: '10px',
+                            width: '400px',
+                            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                        }}
+                    >
+                        <h2 style={{ color: '#d32f2f', marginBottom: '10px' }}>Report Lacy Smith?</h2>
+                        <p style={{ color: '#333', marginBottom: '20px' }}>
+                            By reporting this user, you will not match with them again.
+                        </p>
                         <form onSubmit={handleSubmit}>
                             <textarea
                                 placeholder='Reason for reporting...'
@@ -284,11 +294,14 @@ export default function Home() {
                                     padding: '10px',
                                     borderRadius: '5px',
                                     border: '1px solid #BFCAD8',
-                                    color: 'black',
+                                    color: '#333',
+                                    marginBottom: '10px',
                                 }}
                             />
                             {errorMessage && (
-                                <p style={{ color: 'red', marginTop: '5px', textAlign: 'center' }}>{errorMessage}</p>
+                                <p style={{ color: '#d32f2f', marginTop: '5px', textAlign: 'center' }}>
+                                    {errorMessage}
+                                </p>
                             )}
                             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
                                 <button
@@ -296,8 +309,8 @@ export default function Home() {
                                     onClick={handleCloseModal}
                                     style={{
                                         marginRight: '10px',
-                                        padding: '5px 15px',
-                                        backgroundColor: 'gray',
+                                        padding: '10px 20px',
+                                        backgroundColor: '#9e9e9e',
                                         borderRadius: '5px',
                                         border: 'none',
                                         color: 'white',
@@ -309,8 +322,8 @@ export default function Home() {
                                 <button
                                     type='submit'
                                     style={{
-                                        padding: '5px 15px',
-                                        backgroundColor: 'green',
+                                        padding: '10px 20px',
+                                        backgroundColor: '#388e3c',
                                         borderRadius: '5px',
                                         border: 'none',
                                         color: 'white',
@@ -340,8 +353,10 @@ export default function Home() {
                     }}
                 >
                     <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', width: '400px' }}>
-                        <h2 style={{ color: 'red' }}>We have received your report for Lacy Smith</h2>
-                        <p style={{ color: 'black' }}>You will not match with them again</p>
+                        <h2 style={{ color: '#d32f2f', marginBottom: '10px' }}>
+                            We have received your report for Lacy Smith
+                        </h2>
+                        <p style={{ color: 'black', marginBottom: '10px' }}>You will not match with them again</p>
                         <button
                             onClick={handleCloseModal}
                             style={{
