@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField, Typography, IconButton, InputAdornment, SxProps, Link } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -96,12 +96,18 @@ const CustomButton = ({ onClick, children }: { onClick: () => void; children: Re
     </Button>
 );
 
-const handleNext = () => {
-    window.location.href = '/';
-};
-
 const SignIn: React.FC = () => {
     const [email, setEmail] = useState('');
+    const handleNext = () => {
+        if (email) {
+            localStorage.setItem('userEmail', email);
+            window.location.href = '/';
+        }
+    };
+    useEffect(() => {
+        const email = localStorage.getItem('userEmail');
+        console.log('Email from localStorage:', email);
+    }, []);
     return (
         <Box
             sx={{

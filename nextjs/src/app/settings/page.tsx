@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { Typography, IconButton, Box, TextField, MenuItem, Button } from '@mui/material';
@@ -9,7 +9,12 @@ import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 import majorsData from './majors.json';
 
 export default function Settings() {
-    const { logout } = useKindeAuth();
+    const { logout, user: authUser } = useKindeAuth();
+
+    const userId = '66627e51203c5440e5b9b46c'; // Replace this with the actual user ID
+
+    console.log(authUser); 
+
     const [editMode, setEditMode] = useState({
         name: false,
         email: false,
@@ -17,10 +22,13 @@ export default function Settings() {
         major: false,
         tags: false,
     });
-    const [name, setName] = useState('Firstname LastName');
-    const [email, setEmail] = useState('someone@calpoly.edu');
-    const [year, setYear] = useState('Second');
-    const [major, setMajor] = useState('Computer Science');
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [year, setYear] = useState('');
+    const [major, setMajor] = useState('');
+    const [hobbies, setHobbies] = useState([]);
+    const [classes, setClasses] = useState([]);
+    const [clubs, setClubs] = useState([]);
 
     const handleSave = (field, value) => {
         switch (field) {
@@ -39,11 +47,141 @@ export default function Settings() {
             default:
                 break;
         }
+        updateUserData(field, value);
         setEditMode((prevEditMode) => ({
             ...prevEditMode,
             [field]: false,
         }));
     };
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const email = localStorage.getItem('userEmail');
+                console.log('Email from localStorage:', email);
+
+                if (!email) {
+                    console.error('No email found in localStorage');
+                    return;
+                }
+
+                const response = await fetch(`/api/users/${email}`);
+                const data = await response.json();
+                if (data.success) {
+                    const user = data.data;
+                    // setUserId(user._id); // Set the user ID
+                    setName(`${user.firstName} ${user.lastName}`);
+                    setEmail(user.email);
+                    setYear(user.year);
+                    setMajor(user.major);
+                    setHobbies(user.hobbies);
+                    setClasses(user.classes);
+                    setClubs(user.clubs);
+                } else {
+                    console.error('User not found:', data.error);
+                }
+            } catch (error) {
+                console.error('Failed to fetch user data:', error);
+            }
+        };
+
+        // Log all localStorage items
+        console.log('All localStorage items:');
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            const value = localStorage.getItem(key);
+            console.log(`${key}: ${value}`);
+        }
+
+        fetchUserData();
+    }, []);
+
+    const updateUserData = async (field, value) => {
+        const updatedData = {
+            firstName: name.split(' ')[0],
+            lastName: name.split(' ')[1],
+            email,
+            year,
+            major,
+            hobbies,
+            classes,
+            clubs,
+        };
+        updatedData[field] = value;
+
+        try {
+            const response = await fetch(`/api/users/${email}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData),
+            });
+            const data = await response.json();
+            if (data.success) {
+                console.log('User data updated successfully:', data.data);
+            } else {
+                console.error('Failed to update user data:', data.error);
+            }
+        } catch (error) {
+            console.error('Error updating user data:', error);
+        }
+    };
+
+    // useEffect(() => {
+    //     const fetchUserData = async () => {
+    //         try {
+    //             const response = await fetch(`/api/users/${userId}`);
+    //             const data = await response.json();
+    //             if (data.success) {
+    //                 const user = data.data;
+    //                 setName(`${user.firstName} ${user.lastName}`);
+    //                 setEmail(user.email);
+    //                 setYear(user.year);
+    //                 setMajor(user.major);
+    //                 setHobbies(user.hobbies);
+    //                 setClasses(user.classes);
+    //                 setClubs(user.clubs);
+    //             }
+    //         } catch (error) {
+    //             console.error('Failed to fetch user data:', error);
+    //         }
+    //     };
+
+    //     fetchUserData();
+    // }, [userId]);
+
+    // const updateUserData = async (field, value) => {
+    //     const updatedData = {
+    //         firstName: name.split(' ')[0],
+    //         lastName: name.split(' ')[1],
+    //         email,
+    //         year,
+    //         major,
+    //         hobbies,
+    //         classes,
+    //         clubs,
+    //     };
+    //     updatedData[field] = value;
+
+    //     try {
+    //         const response = await fetch(`/api/users/${userId}`, {
+    //             method: 'PUT',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(updatedData),
+    //         });
+    //         const data = await response.json();
+    //         if (data.success) {
+    //             console.log('User data updated successfully:', data.data);
+    //         } else {
+    //             console.error('Failed to update user data:', data.error);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error updating user data:', error);
+    //     }
+    // };
 
     const Header = ({ text }) => (
         <Typography
@@ -228,7 +366,7 @@ export default function Settings() {
                     marginBottom: '30px',
                 }}
             >
-                <a href='/' style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+                <a href='/chat' style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
                     <div style={{ padding: '5px', borderRadius: '50%' }}>
                         <Image src={user} alt='PolyMeet logo' width={30} height={30} />
                     </div>
@@ -298,9 +436,15 @@ export default function Settings() {
                         My Tags
                     </Typography>
                     <Box sx={{ display: 'flex', gap: '10px' }}>
-                        <Tag label='Hiking' />
-                        <Tag label='CSC 357' />
-                        <Tag label='CS+AI' />
+                        {hobbies.map((hobby, index) => (
+                            <Tag key={`hobby-${index}`} label={hobby} />
+                        ))}
+                        {classes.map((classItem, index) => (
+                            <Tag key={`class-${index}`} label={classItem} />
+                        ))}
+                        {clubs.map((club, index) => (
+                            <Tag key={`club-${index}`} label={club} />
+                        ))}
                         <IconButton sx={{ marginLeft: '10px' }} href='/tags'>
                             <EditIcon sx={{ color: '#BFCAD8' }} />
                         </IconButton>
@@ -310,49 +454,3 @@ export default function Settings() {
         </div>
     );
 }
-
-const Header = ({ text }: { text: string }) => (
-    <Typography
-        variant='h1'
-        sx={{
-            marginBottom: '20px',
-            marginTop: '3rem',
-            color: '#BFCAD8',
-            fontWeight: 'bold',
-            fontSize: '60px',
-            lineHeight: 'auto',
-            letterSpacing: '-0.02em',
-            textAlign: 'center',
-        }}
-    >
-        {text}
-    </Typography>
-);
-
-const Field = ({ label, value }: { label: string; value: string }) => (
-    <Box sx={{ marginBottom: '20px' }}>
-        <Typography variant='h6' sx={{ color: '#BFCAD8' }}>
-            {label}
-        </Typography>
-        <Typography variant='body1' sx={{ display: 'flex', alignItems: 'center', color: '#BFCAD8' }}>
-            {value}
-            <IconButton sx={{ marginLeft: '10px' }}>
-                <EditIcon sx={{ color: '#BFCAD8' }} />
-            </IconButton>
-        </Typography>
-    </Box>
-);
-
-const Tag = ({ label }: { label: string }) => (
-    <Box
-        sx={{
-            backgroundColor: '#F9AD16',
-            padding: '5px 10px',
-            borderRadius: '10px',
-            color: 'black',
-            marginRight: '10px',
-        }}
-    >
-        {label}
-    </Box>
-);
