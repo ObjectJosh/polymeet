@@ -9,10 +9,10 @@ import { IconButton } from '@mui/material';
 import { FaFlag } from 'react-icons/fa6';
 import { FaArrowRight } from 'react-icons/fa';
 
-import User from '@/models/User';
+import { User } from '@/models/User';
 
 interface Message {
-    author: string;
+    email: string;
     message: string;
 }
 
@@ -26,15 +26,26 @@ const servers = {
 };
 
 export default function Room() {
-    const [localUser, setLocalUser] = useState<typeof User | null>(null);
-    const [remoteUser, setRemoteUser] = useState<typeof User | null>(null);
+    // const [remoteUser, setRemoteUser] = useState<typeof User | null>(null);
+    // const [localUser, setLocalUser] = useState<typeof User | null>(null);
+
+    const [localUser, setLocalUser] = useState({
+        email: 'm@calpoly.edu',
+        firstName: 'Mickey',
+        lastName: 'Mouse',
+    });
+    const [remoteUser, setRemoteUser] = useState({
+        email: 'mss@calpoly.edu',
+        firstName: 'Minnie',
+        lastName: 'Mouse',
+    });
     const [messages, setMessages] = useState<Message[]>([
         {
-            author: 'Lacy Smith',
+            email: 'm@calpoly.edu',
             message: 'Hi!',
         },
         {
-            author: 'You',
+            email: 'mss@calpoly.edu',
             message: 'Nice to meet you!',
         },
     ]);
@@ -223,66 +234,228 @@ export default function Room() {
         <div id='meet'>
             <div
                 style={{
-                    width: 700,
-                    height: 325,
-                    background: '#475569',
                     padding: '10px',
                     borderRadius: '10px',
                     marginBottom: '10px',
                     display: 'flex',
+                    flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
                     position: 'relative',
                 }}
             >
-                <p style={{ position: 'absolute', left: 20, top: 20 }}>Them</p>
-                <video
-                    ref={partnerRef}
-                    autoPlay={true}
-                    muted={false}
-                    playsInline
+                <div
                     style={{
-                        width: '100%',
-                        height: '100%',
+                        width: 700,
+                        height: 325,
+                        background: '#475569',
+                        padding: '10px',
                         borderRadius: '10px',
-                        objectFit: 'cover',
+                        marginBottom: '10px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        position: 'relative',
                     }}
-                ></video>
+                >
+                    <p style={{ position: 'absolute', left: 20, top: 20 }}>
+                        {userData ? `${userData.firstName} ${userData.lastName}` : 'Loading...'}
+                    </p>
+                    <video
+                        ref={partnerRef}
+                        autoPlay={true}
+                        muted={false}
+                        playsInline
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            borderRadius: '10px',
+                            objectFit: 'cover',
+                        }}
+                    ></video>
+                </div>
+                <div
+                    style={{
+                        width: 700,
+                        height: 325,
+                        background: '#475569',
+                        padding: '10px',
+                        borderRadius: '10px',
+                        marginBottom: '10px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        position: 'relative',
+                    }}
+                >
+                    <p style={{ position: 'absolute', left: 20, top: 20 }}>You</p>
+                    <video
+                        ref={localVideoRef}
+                        autoPlay={true}
+                        muted={true}
+                        playsInline
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            borderRadius: '10px',
+                            objectFit: 'cover',
+                        }}
+                    ></video>
+                    <div style={{ position: 'absolute', bottom: 10, left: 10, display: 'flex', gap: '10px' }}>
+                        <IconButton onClick={toggleStream} color='primary'>
+                            {videoConfig.video ? <VideocamOff /> : <Videocam />}
+                        </IconButton>
+                        <IconButton onClick={toggleAudio} color='primary'>
+                            {videoConfig.audio ? <MicOff /> : <Mic />}
+                        </IconButton>
+                    </div>
+                </div>
             </div>
-            <div
-                style={{
-                    width: 700,
-                    height: 325,
-                    background: '#475569',
-                    padding: '10px',
-                    borderRadius: '10px',
-                    marginBottom: '10px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    position: 'relative',
-                }}
-            >
-                <p style={{ position: 'absolute', left: 20, top: 20 }}>You</p>
-                <video
-                    ref={localVideoRef}
-                    autoPlay={true}
-                    muted={true}
-                    playsInline
+
+            <div style={{ display: 'flex', marginTop: '20px' }}>
+                <div style={{ flex: 2, marginLeft: '20px', position: 'relative' }}>
+                    <div
+                        style={{
+                            backgroundColor: '#070D1B',
+                            padding: '10px',
+                            borderRadius: '10px',
+                            paddingBottom: 15,
+                            border: '1px solid #BFCAD8',
+                        }}
+                    >
+                        <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
+                            <FaFlag
+                                size={25}
+                                color='red'
+                                style={{ position: 'absolute', top: 10, right: 10, cursor: 'pointer' }}
+                                onClick={handleFlagClick}
+                            />
+                            <strong
+                                style={{
+                                    justifyContent: 'center',
+                                    display: 'flex',
+                                    backgroundColor: '#006155',
+                                    padding: 10,
+                                    color: 'black',
+                                    width: '20rem',
+                                    borderRadius: 20,
+                                }}
+                            >
+                                Chatting With:&nbsp;
+                                <span style={{ color: 'white' }}>
+                                    {userData ? `${userData.firstName} ${userData.lastName}` : 'Loading...'}
+                                </span>
+                            </strong>
+                        </div>
+                        <p>Major: {userData ? userData.major : 'Loading...'}</p>
+                        <p>Year: {userData ? userData.year : 'Loading...'}</p>
+                        <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                            <p>Tags:</p>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    gap: '5px',
+                                    marginLeft: 5,
+                                    justifyContent: 'space-around',
+                                    width: '100%',
+                                }}
+                            >
+                                {userData
+                                    ? [...userData.hobbies, ...userData.classes, ...userData.clubs].map((tag) => (
+                                          <div
+                                              key={tag}
+                                              style={{
+                                                  backgroundColor: '#FFD700',
+                                                  padding: '10px 30px',
+                                                  borderRadius: '10px',
+                                                  color: 'black',
+                                              }}
+                                          >
+                                              {tag}
+                                          </div>
+                                      ))
+                                    : 'Loading...'}
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        style={{
+                            marginTop: '20px',
+                            padding: '10px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '10px',
+                        }}
+                    >
+                        {messages.map((msg, index) =>
+                            msg.email === localUser.email ? (
+                                <div
+                                    key={index}
+                                    style={{
+                                        background: '#CBC3E3',
+                                        padding: '10px 20px',
+                                        borderRadius: '15px',
+                                        maxWidth: '80%',
+                                        alignSelf: 'flex-end',
+                                    }}
+                                >
+                                    <p>You: {msg.message}</p>
+                                </div>
+                            ) : (
+                                <div
+                                    key={index}
+                                    style={{
+                                        background: 'lightblue',
+                                        padding: '10px 20px',
+                                        borderRadius: '15px',
+                                        maxWidth: '80%',
+                                        alignSelf: 'flex-start',
+                                    }}
+                                >
+                                    <p>
+                                        {remoteUser.firstName} {remoteUser.lastName}: {msg.message}
+                                    </p>
+                                </div>
+                            )
+                        )}
+                    </div>
+                </div>
+                <div
                     style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        bottom: 0,
+                        position: 'absolute',
                         width: '100%',
-                        height: '100%',
-                        borderRadius: '10px',
-                        objectFit: 'cover',
                     }}
-                ></video>
-                <div style={{ position: 'absolute', bottom: 10, left: 10, display: 'flex', gap: '10px' }}>
-                    <IconButton onClick={toggleStream} color='primary'>
-                        {videoConfig.video ? <VideocamOff /> : <Videocam />}
-                    </IconButton>
-                    <IconButton onClick={toggleAudio} color='primary'>
-                        {videoConfig.audio ? <MicOff /> : <Mic />}
-                    </IconButton>
+                >
+                    <input
+                        type='text'
+                        placeholder='Send a message...'
+                        style={{
+                            flexGrow: 1,
+                            borderRadius: '20px 0 0 20px',
+                            padding: '10px 20px',
+                            border: '1px solid #BFCAD8',
+                            borderRight: 'none',
+                            backgroundColor: '#070D1B',
+                            color: 'white',
+                        }}
+                    />
+                    <button
+                        style={{
+                            padding: '10px 20px',
+                            fontSize: '16px',
+                            borderRadius: '0 20px 20px 0',
+                            border: '2px solid #BFCAD8',
+                            borderLeft: 'none',
+                            backgroundColor: '#BFCAD8',
+                            color: 'black',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        <FaArrowRight />
+                    </button>
                 </div>
             </div>
         </div>
