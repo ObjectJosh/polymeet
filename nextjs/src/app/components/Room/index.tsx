@@ -1,11 +1,20 @@
 'use client';
 
 import { VideoConfig } from '../webrtc';
-import { useMemo, useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { v4 } from 'uuid';
 import { Videocam, VideocamOff, Mic, MicOff } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
+import { FaFlag } from 'react-icons/fa6';
+import { FaArrowRight } from 'react-icons/fa';
+
+import User from '@/models/User';
+
+interface Message {
+    author: string;
+    message: string;
+}
 
 const servers = {
     iceServers: [
@@ -17,6 +26,20 @@ const servers = {
 };
 
 export default function Room() {
+    const [localUser, setLocalUser] = useState<typeof User | null>(null);
+    const [remoteUser, setRemoteUser] = useState<typeof User | null>(null);
+    const [messages, setMessages] = useState<Message[]>([
+        {
+            author: 'Lacy Smith',
+            message: 'Hi!',
+        },
+        {
+            author: 'You',
+            message: 'Nice to meet you!',
+        },
+    ]);
+
+    const [userData, setUserData] = useState(null);
     const server = 'https://polymeet-7137e04975b4.herokuapp.com/';
     const [socket, setSocket] = useState(io(server));
 
@@ -180,6 +203,20 @@ export default function Room() {
             ...videoConfig,
             audio: !videoConfig.audio,
         });
+    };
+
+    const handleFlagClick = () => {
+        setModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        setReportSubmitted(false);
+    };
+
+    const handleSubmit = (event: { preventDefault: () => void }) => {
+        event.preventDefault();
+        setReportSubmitted(true);
     };
 
     return (
