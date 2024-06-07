@@ -1,8 +1,8 @@
-// app/tags/page.tsx
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 
 const tags = {
     Hobbies: [
@@ -44,28 +44,144 @@ const tags = {
 };
 
 const EditTags: React.FC = () => {
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const { user: authUser } = useKindeAuth();
+    const userId = '66627e51203c5440e5b9b46c'; // Replace this with the actual user ID
+    const [selectedTags, setSelectedTags] = useState<{ Hobbies: string; Classes: string; Clubs: string }>({
+        Hobbies: '',
+        Classes: '',
+        Clubs: '',
+    });
     const router = useRouter();
 
-    const handleTagClick = (tag: string) => {
-        if (selectedTags.includes(tag)) {
-            setSelectedTags(selectedTags.filter((t) => t !== tag));
-        } else if (selectedTags.length < 3) {
-            setSelectedTags([...selectedTags, tag]);
+    useEffect(() => {
+        const fetchUserTags = async () => {
+            try {
+                const email = localStorage.getItem('userEmail');
+                console.log('Email from localStorage:', email);
+
+                if (!email) {
+                    console.error('No email found in localStorage');
+                    return;
+                }
+
+                const response = await fetch(`/api/users/${email}`);
+                const data = await response.json();
+                if (data.success) {
+                    const user = data.data;
+                    setSelectedTags({
+                        Hobbies: user.hobbies[0] || '',
+                        Classes: user.classes[0] || '',
+                        Clubs: user.clubs[0] || '',
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to fetch user tags:', error);
+            }
+        };
+
+        fetchUserTags();
+    }, []);
+
+    const handleTagClick = (category: string, tag: string) => {
+        setSelectedTags((prevSelectedTags) => ({
+            ...prevSelectedTags,
+            [category]: prevSelectedTags[category] === tag ? '' : tag,
+        }));
+    };
+
+    const handleSave = async () => {
+        try {
+            const email = localStorage.getItem('userEmail');
+            const updatedTags = {
+                hobbies: [selectedTags.Hobbies],
+                classes: [selectedTags.Classes],
+                clubs: [selectedTags.Clubs],
+            };
+
+            const response = await fetch(`/api/users/${email}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedTags),
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                console.log('Tags updated successfully:', data.data);
+                router.push('/settings');
+            } else {
+                console.error('Failed to update tags:', data.error);
+            }
+        } catch (error) {
+            console.error('Error updating tags:', error);
         }
     };
 
-    const handleSave = () => {
-        // need to handle save logic
-        router.push('/settings');
-    };
+    // useEffect(() => {
+    //     const fetchUserTags = async () => {
+    //         try {
+    //             const response = await fetch(`/api/users/${userId}`);
+    //             const data = await response.json();
+    //             if (data.success) {
+    //                 const user = data.data;
+    //                 setSelectedTags({
+    //                     Hobbies: user.hobbies[0] || '',
+    //                     Classes: user.classes[0] || '',
+    //                     Clubs: user.clubs[0] || '',
+    //                 });
+    //             }
+    //         } catch (error) {
+    //             console.error('Failed to fetch user tags:', error);
+    //         }
+    //     };
+
+    //     if (userId) {
+    //         fetchUserTags();
+    //     }
+    // }, [userId]);
+
+    // const handleTagClick = (category: string, tag: string) => {
+    //     setSelectedTags((prevSelectedTags) => ({
+    //         ...prevSelectedTags,
+    //         [category]: prevSelectedTags[category] === tag ? '' : tag,
+    //     }));
+    // };
+
+    // const handleSave = async () => {
+    //     try {
+    //         const updatedTags = {
+    //             hobbies: [selectedTags.Hobbies],
+    //             classes: [selectedTags.Classes],
+    //             clubs: [selectedTags.Clubs],
+    //         };
+
+    //         const response = await fetch(`/api/users/${userId}`, {
+    //             method: 'PUT',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(updatedTags),
+    //         });
+
+    //         const data = await response.json();
+    //         if (data.success) {
+    //             console.log('Tags updated successfully:', data.data);
+    //             router.push('/settings');
+    //         } else {
+    //             console.error('Failed to update tags:', data.error);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error updating tags:', error);
+    //     }
+    // };
 
     return (
         <Box
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
+
                 height: '100vh',
                 backgroundColor: '#070D1B',
                 color: '#BFCAD8',
@@ -89,7 +205,7 @@ const EditTags: React.FC = () => {
             </Typography>
             <div className='categories'>
                 {Object.entries(tags).map(([category, tags]) => (
-                    <div key={category} className='category' style={{ marginBottom: '20px' }}>
+                    <div key={category} className='category' style={{ marginBottom: '20px', marginLeft: '10%' }}>
                         <Typography
                             variant='h6'
                             sx={{
@@ -104,13 +220,13 @@ const EditTags: React.FC = () => {
                             {tags.map((tag) => (
                                 <Button
                                     key={tag}
-                                    className={`tag ${selectedTags.includes(tag) ? 'selected' : ''}`}
-                                    onClick={() => handleTagClick(tag)}
+                                    className={`tag ${selectedTags[category] === tag ? 'selected' : ''}`}
+                                    onClick={() => handleTagClick(category, tag)}
                                     sx={{
-                                        backgroundColor: selectedTags.includes(tag) ? '#F9AD16' : '#F1C56C',
+                                        backgroundColor: selectedTags[category] === tag ? '#F9AD16' : '#F1C56C',
                                         color: '#1E293B',
                                         '&:hover': {
-                                            backgroundColor: selectedTags.includes(tag) ? '#FBBF24' : '#F59E0B',
+                                            backgroundColor: selectedTags[category] === tag ? '#FBBF24' : '#F59E0B',
                                         },
                                         borderRadius: '20px',
                                         padding: '10px 20px',

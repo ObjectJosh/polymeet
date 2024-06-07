@@ -225,7 +225,7 @@ const CreateAccount: React.FC = () => {
         setEmail(newEmail);
         setEmailValid(validateEmail(newEmail));
 
-        localStorage.setItem('email', newEmail);
+        localStorage.setItem('userEmail', newEmail);
     };
 
     const renderStepContent = (step: number) => {
