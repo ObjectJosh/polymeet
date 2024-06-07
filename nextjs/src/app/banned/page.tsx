@@ -24,7 +24,7 @@ export default function Banned() {
 
     const handleSubmitAppeal = async () => {
         try {
-            window.location.href = '/appeal'; // rm if fix
+            window.location.href = '/Appeal'; // rm if fix
             const response = await fetch('/api/appeal', {
                 method: 'POST',
                 headers: {
@@ -33,7 +33,7 @@ export default function Banned() {
                 body: JSON.stringify({ email, appealText }),
             });
             if (response.ok) {
-                window.location.href = '/appeal';
+                window.location.href = '/Appeal';
                 console.log('Appeal submitted successfully');
             } else {
                 console.error('Failed to submit appeal');
