@@ -17,8 +17,8 @@ export default async function handler(req, res) {
                     return res.status(404).json({ success: false, error: 'User not found' });
                 }
 
-                reportedUser.numReports += 1;
-                if (reportedUser.numReports >= 3) {
+                reportedUser.numReports = Number(reportedUser.numReports) + 1;
+                if (Number(reportedUser.numReports) >= 3) {
                     reportedUser.banned = true;
                 }
                 reportedUser.blockedUserIds.push(req.user._id);
