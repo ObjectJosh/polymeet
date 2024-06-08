@@ -1,19 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
-import User from '@/models/User';
+import { findUserById, findUserByEmail, updateUserById, updateUserByEmail, deleteUserById, deleteUserByEmail } from '../../../../services/user_services';
 
-/* Get a user by their ID or email */
 export async function GET(req, { params }) {
     const { param } = params;
     await dbConnect();
     try {
         let user;
         if (param.includes('@')) {
-            // If the parameter includes '@', it's likely an email
-            user = await User.findOne({ email: param });
+            user = await findUserByEmail(param);
         } else {
-            // Otherwise, treat it as an ID
-            user = await User.findById(param);
+            user = await findUserById(param);
         }
         if (!user) {
             return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
@@ -24,7 +21,6 @@ export async function GET(req, { params }) {
     }
 }
 
-/* Edit a user by their ID or email */
 export async function PUT(req, { params }) {
     const { param } = params;
     await dbConnect();
@@ -32,17 +28,9 @@ export async function PUT(req, { params }) {
     try {
         let user;
         if (param.includes('@')) {
-            // If the parameter includes '@', it's likely an email
-            user = await User.findOneAndUpdate({ email: param }, body, {
-                new: true,
-                runValidators: true,
-            });
+            user = await updateUserByEmail(param, body);
         } else {
-            // Otherwise, treat it as an ID
-            user = await User.findByIdAndUpdate(param, body, {
-                new: true,
-                runValidators: true,
-            });
+            user = await updateUserById(param, body);
         }
         if (!user) {
             return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
@@ -53,18 +41,15 @@ export async function PUT(req, { params }) {
     }
 }
 
-/* Delete a user by their ID or email */
 export async function DELETE(req, { params }) {
     const { param } = params;
     await dbConnect();
     try {
         let deletedUser;
         if (param.includes('@')) {
-            // If the parameter includes '@', it's likely an email
-            deletedUser = await User.deleteOne({ email: param });
+            deletedUser = await deleteUserByEmail(param);
         } else {
-            // Otherwise, treat it as an ID
-            deletedUser = await User.deleteOne({ _id: param });
+            deletedUser = await deleteUserById(param);
         }
         if (!deletedUser) {
             return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });

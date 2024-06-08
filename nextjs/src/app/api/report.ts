@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
-import User from '@/models/User';
+import { findUserById, updateUserById } from '../../services/user_services';
 
 export default async function handler(req, res) {
     const { method } = req;
@@ -12,25 +12,19 @@ export default async function handler(req, res) {
             try {
                 const { reportedUserId } = req.body;
 
-                // Find the user being reported and update their numReports field
-                const reportedUser = await User.findById(reportedUserId);
+                const reportedUser = await findUserById(reportedUserId);
                 if (!reportedUser) {
                     return res.status(404).json({ success: false, error: 'User not found' });
                 }
 
-                // Update numReports and check if it reaches 3
-                reportedUser.numReports += 1;
-                if (reportedUser.numReports >= 3) {
+                reportedUser.numReports = Number(reportedUser.numReports) + 1;
+                if (Number(reportedUser.numReports) >= 3) {
                     reportedUser.banned = true;
                 }
-
-                // Update blockedUserIds
                 reportedUser.blockedUserIds.push(req.user._id);
 
-                // Save the changes to the user
-                await reportedUser.save();
-
-                return res.status(200).json({ success: true, data: reportedUser });
+                const updatedUser = await updateUserById(reportedUserId, reportedUser);
+                return res.status(200).json({ success: true, data: updatedUser });
             } catch (error) {
                 return res.status(500).json({ success: false, error: error.message });
             }
