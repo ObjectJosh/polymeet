@@ -26,9 +26,9 @@ cd nextjs
 ```
 
 ```bash
-npm install
+pnpm install
 ```
 Run run the app:
 ```
-npm run dev
+pnpm run dev
 ```
