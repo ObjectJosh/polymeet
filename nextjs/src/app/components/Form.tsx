@@ -9,7 +9,7 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const contentType = 'application/json';
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState<FormError>({});
     const [message, setMessage] = useState('');
 
     const [form, setForm] = useState<UserForm>({
@@ -18,7 +18,6 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
         email: userForm.email,
     });
 
-    /* The PUT method edits an existing entry in the mongodb database. */
     const putData = async (form: UserForm) => {
         const id = searchParams.get('id');
 
@@ -36,21 +35,19 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
                 }),
             });
 
-            // Throw error with status code in case Fetch API req failed
             if (!res.ok) {
                 throw new Error(res.status?.toString());
             }
 
             const { data } = await res.json();
 
-            mutate(`/api/users/${id}`, data, false); // Update the local data without a revalidation
+            mutate(`/api/users/${id}`, data, false);
             router.push('/');
         } catch (error) {
             setMessage('Failed to update user');
         }
     };
 
-    /* The POST method adds a new entry in the mongodb database. */
     const postData = async (form: UserForm) => {
         try {
             console.log('try to post');
@@ -67,7 +64,6 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
                 }),
             });
 
-            // Throw error with status code in case Fetch API req failed
             if (!res.ok) {
                 throw new Error(res.status.toString());
             }
@@ -81,7 +77,7 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
 
     const handleChange = (e: any) => {
         const target = e.target;
-        const value = target.name === 'poddy_trained' ? target.checked : target.value;
+        const value = target.value;
         const name = target.name;
 
         setForm({
@@ -96,13 +92,12 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
         if (Object.keys(errs).length === 0) {
             forNewUser ? postData(form) : putData(form);
         } else {
-            setErrors({ errs });
+            setErrors(errs);
         }
     };
 
-    /* Makes sure user info is filled for the form */
     const formValidate = () => {
-        const err: FormError = {} as FormError;
+        const err: FormError = {};
         if (!form.firstName) err.firstName = 'First name is required';
         if (!form.lastName) err.lastName = 'Last name is required';
         if (!form.email) err.email = 'Email is required';
@@ -114,6 +109,7 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
             <form id={formId} onSubmit={handleSubmit} className='flex flex-col w-48'>
                 <label htmlFor='firstName'>First Name</label>
                 <input
+                    id='firstName'
                     className='text-black'
                     type='text'
                     maxLength={60}
@@ -125,6 +121,7 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
 
                 <label htmlFor='lastName'>Last Name</label>
                 <input
+                    id='lastName'
                     className='text-black'
                     type='text'
                     maxLength={60}
@@ -135,6 +132,7 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
                 />
                 <label htmlFor='email'>Email</label>
                 <input
+                    id='email'
                     className='text-black'
                     type='text'
                     maxLength={60}
@@ -150,7 +148,7 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
             <p>{message}</p>
             <div>
                 {Object.keys(errors).map((err, index) => (
-                    <li key={index}>{err}</li>
+                    <li key={index}>{errors[err]}</li>
                 ))}
             </div>
         </>

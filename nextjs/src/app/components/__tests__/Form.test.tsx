@@ -1,27 +1,18 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-// import '@testing-library/jest-dom/extend-expect';
-import '@testing-library/jest-dom/jest-globals';
-import '@testing-library/jest-dom';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useSearchParams } from 'next/navigation';
-
 import Form from '../Form';
-import { useRouter } from 'next/navigation';
-import { mutate } from 'swr';
-
-console.log('form testing');
 
 jest.mock('next/navigation', () => ({
     useSearchParams: jest.fn().mockReturnValue({
-        get: jest.fn().mockReturnValue('123'), // Mocking an ID for putData function
+        get: jest.fn().mockReturnValue('123'),
     }),
     useRouter: jest.fn().mockReturnValue({
         push: jest.fn(),
     }),
 }));
 
-// Mocking swr's mutate function
 jest.mock('swr', () => ({
     mutate: jest.fn(),
 }));
