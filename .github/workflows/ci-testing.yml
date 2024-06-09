@@ -29,6 +29,8 @@ jobs:
         run: cd nextjs && npm run prettier
 
       - name: Build project
+        env:
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
         run: cd nextjs && npm run build
 
       - name: Run tests
