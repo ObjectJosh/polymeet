@@ -20,20 +20,25 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: cd nextjs && npm ci
+        run: npm ci
+        working-directory: nextjs
 
       - name: Lint code
-        run: cd nextjs && npm run lint
+        run: npm run lint
+        working-directory: nextjs
 
       - name: Run Prettier
-        run: cd nextjs && npm run prettier
+        run: npm run prettier
+        working-directory: nextjs
 
       - name: Build project
         env:
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
-        run: cd nextjs && npm run build
+        run: npm run build
+        working-directory: nextjs
 
       - name: Run tests
         env:
           SUPPRESS_JEST_WARNINGS: true
-        run: cd nextjs && npm test
+        run: npm test
+        working-directory: nextjs

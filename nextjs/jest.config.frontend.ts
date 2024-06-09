@@ -15,7 +15,12 @@ const frontendConfig: Config = {
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
+    '^.+\\.(ts|tsx|js|jsx)$': [
+      'ts-jest',
+      {
+        babelConfig: true,
+      },
+    ],
   },
   transformIgnorePatterns: [
     'node_modules/(?!@babel/runtime)',
