@@ -9,7 +9,7 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const contentType = 'application/json';
-    const [errors, setErrors] = useState<FormError>({});
+    const [errors, setErrors] = useState<FormError>({} as FormError);
     const [message, setMessage] = useState('');
 
     const [form, setForm] = useState<UserForm>({
@@ -97,7 +97,7 @@ const Form: React.FC<FormProps> = ({ formId, userForm, forNewUser }) => {
     };
 
     const formValidate = () => {
-        const err: FormError = {};
+        const err: FormError = {} as FormError;
         if (!form.firstName) err.firstName = 'First name is required';
         if (!form.lastName) err.lastName = 'Last name is required';
         if (!form.email) err.email = 'Email is required';

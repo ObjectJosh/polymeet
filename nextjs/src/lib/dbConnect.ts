@@ -13,15 +13,13 @@ if (!MONGODB_URL) {
   throw new Error('Please define the MONGODB_URL environment variable inside .env.local');
 }
 
-let cached = global.mongoose;
+let cached: any = global.mongoose;
 
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
 async function dbConnect() {
-  console.log('calling to MongoDB');
-
   if (cached.conn) {
     return cached.conn;
   }
@@ -29,8 +27,8 @@ async function dbConnect() {
     const opts = {
       bufferCommands: false,
     };
-    cached.promise = mongoose.connect(MONGODB_URL, opts).then((mongoose) => {
-      return mongoose;
+    cached.promise = mongoose.connect(MONGODB_URL, opts).then((mongooseInstance) => {
+      return mongooseInstance;
     });
   }
   try {
@@ -39,7 +37,6 @@ async function dbConnect() {
     cached.promise = null;
     throw e;
   }
-  console.log('Connected to MongoDB');
   return cached.conn;
 }
 
