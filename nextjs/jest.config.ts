@@ -5,20 +5,12 @@ const createJestConfig = nextJest({
   dir: './',
 });
 
-const config: Config = {
+// Base configuration for both environments
+const baseConfig: Config = {
   preset: 'ts-jest',
-  testEnvironment: 'jsdom',
   coverageProvider: 'v8',
   coverageDirectory: 'coverage',
   collectCoverage: true,
-  collectCoverageFrom: [
-    'src/services/**/*.ts',  // backend
-    'src/models/**/*.ts',
-    '!src/**/*.test.ts',
-    'src/app/components/Form.tsx', // frontend component
-    '!src/**/*.test.ts',
-    '!src/**/*.test.tsx'
-  ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
@@ -31,4 +23,31 @@ const config: Config = {
   ],
 };
 
-export default createJestConfig(config);
+// Configuration for frontend (jsdom) tests
+const frontendConfig: Config = {
+  ...baseConfig,
+  testEnvironment: 'jsdom',
+  collectCoverageFrom: [
+    'src/app/components/Form.tsx',
+    '!src/**/*.test.tsx',
+  ],
+};
+
+// Configuration for backend (node) tests
+const backendConfig: Config = {
+  ...baseConfig,
+  testEnvironment: 'node',
+  collectCoverageFrom: [
+    'src/services/**/*.ts',
+    'src/models/**/*.ts',
+    '!src/**/*.test.ts',
+  ],
+};
+
+// Export configuration based on environment
+export default createJestConfig({
+  projects: [
+    frontendConfig,
+    backendConfig,
+  ],
+});

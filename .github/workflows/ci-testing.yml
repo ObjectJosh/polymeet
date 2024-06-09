@@ -34,4 +34,6 @@ jobs:
         run: cd nextjs && npm run build
 
       - name: Run tests
+        env:
+          SUPPRESS_JEST_WARNINGS: true
         run: cd nextjs && npm test
