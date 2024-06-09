@@ -2,8 +2,8 @@ import type { Config } from 'jest';
 
 const config: Config = {
   projects: [
-    '<rootDir>/jest.config.frontend.ts',
-    '<rootDir>/jest.config.backend.ts',
+    '<rootDir>/nextjs/jest.config.frontend.ts',
+    '<rootDir>/nextjs/jest.config.backend.ts',
   ],
 };
 
