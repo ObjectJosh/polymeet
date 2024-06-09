@@ -1,16 +1,16 @@
-console.log("Running user_services.test.ts");
-
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { getAllUsers, createUser, findUserById, findUserByEmail, updateUserById, updateUserByEmail, deleteUserById, deleteUserByEmail } from './user_services';
 import User from '../models/User';
+
+console.log("Running user_services.test.ts");
 
 let mongoServer: MongoMemoryServer;
 
 beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
     const uri = mongoServer.getUri();
-    await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    await mongoose.connect(uri);
 });
 
 afterAll(async () => {
