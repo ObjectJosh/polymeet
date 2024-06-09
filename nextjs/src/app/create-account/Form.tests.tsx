@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useSearchParams } from 'next/navigation';
-import Form from '../Form';
+import Form from '../components/Form';
 
 jest.mock('next/navigation', () => ({
     useSearchParams: jest.fn().mockReturnValue({
